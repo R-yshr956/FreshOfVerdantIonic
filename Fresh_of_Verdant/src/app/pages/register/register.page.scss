@@ -54,6 +54,17 @@
     height: 48px;
 }
 
+.field input.invalid {
+    border-color: #d93025;
+}
+
+.field-error {
+    margin: 5px 2px 0;
+    color: #c5221f;
+    font-size: 11px;
+    line-height: 1.35;
+}
+
 .terms {
     display: flex;
     align-items: center;

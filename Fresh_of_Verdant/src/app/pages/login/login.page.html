@@ -11,17 +11,19 @@
 
     <div class="auth-sheet">
       <label class="field-label">Email Address</label>
-      <div class="field">
+      <div class="field" [class.has-error]="!!emailError">
         <ion-icon name="mail-outline"></ion-icon>
-        <input type="email" autocomplete="email" placeholder="you@example.com" [(ngModel)]="email" />
+        <input type="email" name="email" autocomplete="email" placeholder="you@example.com" required maxlength="254" [(ngModel)]="email" (ngModelChange)="clearEmailError()" />
       </div>
+      @if (emailError) { <p class="field-error">{{ emailError }}</p> }
 
       <label class="field-label">Password</label>
-      <div class="field">
+      <div class="field" [class.has-error]="!!passwordError">
         <ion-icon name="lock-closed-outline"></ion-icon>
-        <input [type]="showPassword ? 'text' : 'password'" autocomplete="current-password" placeholder="Enter your password" [(ngModel)]="password" />
+        <input [type]="showPassword ? 'text' : 'password'" name="password" autocomplete="current-password" placeholder="Enter your password" required maxlength="64" [(ngModel)]="password" (ngModelChange)="clearPasswordError()" />
         <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" (click)="showPassword = !showPassword"></ion-icon>
       </div>
+      @if (passwordError) { <p class="field-error">{{ passwordError }}</p> }
 
       <div class="row">
         <ion-checkbox labelPlacement="end" [(ngModel)]="remember">Remember Me</ion-checkbox>
