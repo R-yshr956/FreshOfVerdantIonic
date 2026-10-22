@@ -1,0 +1,27 @@
+<app-page-header title="Security & Change Password" align="left"></app-page-header>
+
+<ion-content>
+  <section class="security-card">
+    <span class="security-icon"><ion-icon name="shield-checkmark-outline"></ion-icon></span>
+    <h1>Keep your account secure</h1>
+    <p>Use a unique password with at least 8 characters. Never share your password with anyone.</p>
+  </section>
+
+  <form class="password-form" (ngSubmit)="changePassword()">
+    <h2>Change password</h2>
+    <label for="current-password">Current password</label>
+    <input id="current-password" name="currentPassword" [type]="showPasswords ? 'text' : 'password'" autocomplete="current-password" [(ngModel)]="currentPassword" placeholder="Enter current password" />
+
+    <label for="new-password">New password</label>
+    <input id="new-password" name="newPassword" [type]="showPasswords ? 'text' : 'password'" autocomplete="new-password" [(ngModel)]="newPassword" placeholder="At least 8 characters" />
+
+    <label for="confirm-password">Confirm new password</label>
+    <input id="confirm-password" name="confirmPassword" [type]="showPasswords ? 'text' : 'password'" autocomplete="new-password" [(ngModel)]="confirmPassword" placeholder="Enter new password again" />
+
+    <button class="show-password" type="button" (click)="showPasswords = !showPasswords"><ion-icon [name]="showPasswords ? 'eye-off-outline' : 'eye-outline'"></ion-icon>{{ showPasswords ? 'Hide passwords' : 'Show passwords' }}</button>
+    @if (error) { <p class="notice error" role="alert">{{ error }}</p> }
+    @if (message) { <p class="notice" role="status">{{ message }}</p> }
+    <button class="fv-btn" type="submit"><ion-icon name="lock-closed-outline"></ion-icon> Save new password</button>
+    <small class="service-note">Password changes require account verification. Passwords are not stored on this device.</small>
+  </form>
+</ion-content>

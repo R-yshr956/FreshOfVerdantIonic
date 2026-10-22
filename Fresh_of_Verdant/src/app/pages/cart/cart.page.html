@@ -1,6 +1,6 @@
 <ion-content class="cart-page">
   <div class="head">
-    <a class="back" routerLink="/home" aria-label="Back to menu">←</a>
+    <ion-menu-button class="back" menu="main-menu" aria-label="Open navigation menu"></ion-menu-button>
     <a class="logo-box" routerLink="/home"><ion-icon name="nutrition-outline"></ion-icon></a>
     <div class="titles"><small>FARMBOX MARKET</small><h1>My Cart</h1></div>
   </div>
@@ -60,4 +60,6 @@
     <button class="fv-btn" routerLink="/checkout">Checkout</button>
   </div>
   }
+
+  <a class="bottom-back" routerLink="/home" aria-label="Back to main menu"><ion-icon name="arrow-back-outline"></ion-icon></a>
 </ion-content>

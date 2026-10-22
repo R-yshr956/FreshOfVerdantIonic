@@ -1,6 +1,7 @@
 ion-content {
     --background: #f6f3ea;
-    color: #111;
+    --color: #000;
+    color: #000;
 }
 
 .card {
@@ -24,7 +25,7 @@ h3 {
 .hint {
     margin: 2px 0 10px;
     font-size: 12px;
-    color: var(--fv-muted);
+    color: #000;
 
     &.outside {
         margin: 2px 16px 10px;
@@ -50,6 +51,7 @@ h3 {
     border: 1px solid #ddd;
     border-radius: 12px;
     background: #fff;
+    color: #000;
 
     &.half {
         width: 50%;
@@ -73,7 +75,7 @@ h3 {
         display: block;
         font-size: 8px;
         letter-spacing: .4px;
-        color: var(--fv-muted);
+        color: #000;
         font-weight: 600;
     }
 
@@ -87,7 +89,11 @@ h3 {
         font-weight: 600;
         padding: 0;
         appearance: none;
+        color: #000;
+        caret-color: #000;
     }
+
+    input::placeholder { color: #000; opacity: 1; }
 
     &.sel>ion-icon {
         font-size: 14px;
@@ -101,6 +107,7 @@ h3 {
     border-radius: 14px;
     background: #fff;
     text-align: left;
+    color: #000;
 
     div {
         display: flex;
@@ -114,7 +121,7 @@ h3 {
 
     small {
         font-size: 11px;
-        color: var(--fv-muted);
+        color: #000;
     }
 
     &.on {
@@ -139,6 +146,7 @@ h3 {
     border-radius: 14px;
     background: #fff;
     text-align: left;
+    color: #000;
 
     &.on {
         border-color: var(--fv-green);
@@ -167,7 +175,7 @@ h3 {
 
         small {
             font-size: 11px;
-            color: var(--fv-muted);
+            color: #000;
         }
     }
 
@@ -205,6 +213,10 @@ h3 {
         resize: none;
         background: transparent;
         font-size: 13px;
+        color: #000;
+        caret-color: #000;
+
+        &::placeholder { color: #000; opacity: 1; }
     }
 }
 
@@ -217,7 +229,7 @@ h3 {
         display: block;
         margin-top: 8px;
         font-size: 11px;
-        color: var(--fv-muted);
+        color: #000;
 
         ion-icon {
             vertical-align: -2px;

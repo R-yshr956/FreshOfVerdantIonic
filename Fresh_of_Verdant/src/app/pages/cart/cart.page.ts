@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { IonContent, IonIcon } from '@ionic/angular';
+import { IonContent, IonIcon, IonMenuButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { add, carOutline, imageOutline, nutritionOutline, remove, trashOutline } from 'ionicons/icons';
+import { add, arrowBackOutline, carOutline, imageOutline, nutritionOutline, remove, trashOutline } from 'ionicons/icons';
 import { CartService } from '../../services/cart';
 
 @Component({
@@ -10,11 +10,11 @@ import { CartService } from '../../services/cart';
   templateUrl: './cart.page.html',
   styleUrls: ['./cart.page.scss'],
   standalone: true,
-  imports: [IonContent, IonIcon, RouterLink],
+  imports: [IonContent, IonIcon, IonMenuButton, RouterLink],
 })
 export class CartPage {
   constructor(public cart: CartService) {
-    addIcons({ add, carOutline, imageOutline, nutritionOutline, remove, trashOutline });
+    addIcons({ add, arrowBackOutline, carOutline, imageOutline, nutritionOutline, remove, trashOutline });
   }
 
   ionViewWillEnter() {

@@ -1,11 +1,11 @@
 <ion-app>
-  <ion-menu contentId="main-content" [disabled]="!showMenu">
+  <ion-menu menuId="main-menu" contentId="main-content" [disabled]="!showMenu">
     <ion-content>
       <div class="menu-head" routerLink="/profile">
         <!-- Avatar placeholder: replace with <img> later -->
-        <div class="avatar img-ph">JP<ion-icon name="chevron-forward"></ion-icon></div>
-        <h2>John Paulino</h2>
-        <p><ion-icon name="call-outline"></ion-icon> +63 912 345 6789</p>
+        <div class="avatar img-ph">{{ profileInitials }}<ion-icon name="chevron-forward"></ion-icon></div>
+        <h2>{{ profileName }}</h2>
+        <p><ion-icon name="call-outline"></ion-icon> {{ profilePhone }}</p>
       </div>
 
       <nav class="menu-list">

@@ -11,8 +11,13 @@
 
   @for (m of team; track m.name) {
     <div class="member">
-      <!-- Photo placeholder: replace with <img> later -->
-      <div class="photo img-ph"><ion-icon name="person-outline"></ion-icon></div>
+      <div class="photo img-ph">
+        @if (!m.photoFailed) {
+          <img [src]="m.photoUrl" [alt]="m.name + ' portrait'" (error)="m.photoFailed = true">
+        } @else {
+          <ion-icon name="person-outline"></ion-icon>
+        }
+      </div>
       <div class="t">
         <strong>{{ m.name }}</strong>
         <b>{{ m.role }}</b>

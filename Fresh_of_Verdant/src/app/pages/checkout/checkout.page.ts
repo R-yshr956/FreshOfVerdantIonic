@@ -6,6 +6,7 @@ import { addIcons } from 'ionicons';
 import { cardOutline, cashOutline, checkmark, chevronDown, chatboxEllipsesOutline, locationOutline, mailOutline, personOutline, phonePortraitOutline, callOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { CartService } from '../../services/cart';
+import { OrderHistoryService } from '../../services/order-history';
 
 @Component({
   selector: 'app-checkout',
@@ -35,7 +36,7 @@ export class CheckoutPage {
 
   notes = '';
 
-  constructor(private cart: CartService, private router: Router) {
+  constructor(private cart: CartService, private router: Router, private orderHistory: OrderHistoryService) {
     addIcons({ callOutline, cardOutline, cashOutline, checkmark, chevronDown, chatboxEllipsesOutline, locationOutline, mailOutline, personOutline, phonePortraitOutline, shieldCheckmarkOutline });
   }
 
@@ -48,7 +49,14 @@ export class CheckoutPage {
   }
 
   placeOrder() {
-    // TODO: send the order to your API, then clear the cart
-    this.router.navigateByUrl('/order-tracker');
+    const schedule = this.schedules.find((entry) => entry.id === this.schedule)!;
+    const order = this.orderHistory.create({
+      items: this.cart.items().map((item) => ({ ...item })),
+      total: this.total,
+      address: `${this.address.street}, ${this.address.barangay}, ${this.address.city} ${this.address.zip}`,
+      payment: this.payment === 'cod' ? 'Cash on Delivery' : 'Cashless',
+      deliveryWindow: schedule.time,
+    });
+    void this.router.navigate(['/order-tracker'], { queryParams: { order: order.id } });
   }
 }

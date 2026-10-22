@@ -1,0 +1,96 @@
+<app-page-header [title]="title" [subtitle]="subtitle"></app-page-header>
+
+<ion-content>
+  @if (page === 'support') {
+    <section class="support-welcome">
+      <span class="support-welcome-icon"><ion-icon name="headset-outline"></ion-icon></span>
+      <div><h2>How can we help?</h2><p>Find answers or get in touch with our team.</p></div>
+    </section>
+    <label class="support-search"><ion-icon name="search-outline"></ion-icon><input type="search" placeholder="Search orders, delivery, payments..." [(ngModel)]="supportSearch" aria-label="Search help topics"></label>
+    <div class="support-heading"><h3>Popular questions</h3><a routerLink="/faqs">All FAQs <ion-icon name="chevron-forward"></ion-icon></a></div>
+    <section class="content-card faq-list support-questions">
+      @for (topic of filteredSupportTopics; track topic.question) {
+        <details><summary>{{ topic.question }}</summary><p>{{ topic.answer }}</p></details>
+      } @empty { <p class="support-empty">No answers found. Try another search or contact our team.</p> }
+    </section>
+    <h3 class="support-title">Quick help</h3>
+    <section class="support-actions">
+      <a routerLink="/orders"><span><ion-icon name="receipt-outline"></ion-icon></span><strong>My orders</strong><small>Review an order</small><ion-icon class="support-arrow" name="chevron-forward"></ion-icon></a>
+      <a routerLink="/order-tracker"><span><ion-icon name="navigate-outline"></ion-icon></span><strong>Track delivery</strong><small>See delivery progress</small><ion-icon class="support-arrow" name="chevron-forward"></ion-icon></a>
+    </section>
+    <section class="support-contact">
+      <h3>Still need a hand?</h3><p>Our support team is ready to help with your question.</p>
+      <a class="support-contact-button" routerLink="/contact"><ion-icon name="mail-outline"></ion-icon> Contact us</a>
+      <a class="support-phone" href="tel:+63285550147"><ion-icon name="call-outline"></ion-icon> +63 (2) 8555 0147</a>
+    </section>
+  } @else if (page === 'location') {
+    <section class="location-card">
+      <div class="map-placeholder" role="img" aria-label="Map illustration marking Verdant Market Hall on Orchard Lane">
+        <svg class="map-art" viewBox="0 0 700 360" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="700" height="360" fill="#e9eee2" />
+          <path d="M0 38h172l35 44h114v-82h82l34 49h134l39-49h90v102l-46 42H518l-27 45H351l-26-40H196l-42 48H0z" fill="#d8e9d0" />
+          <path d="M0 282h137l35-36h108l30 34h117l37-53h132l42 46h62v87H0z" fill="#d4e8cd" />
+          <path d="M-22 90 166 142l135 9 118-38 139 12 164-66" fill="none" stroke="#fff" stroke-width="25" />
+          <path d="M-22 90 166 142l135 9 118-38 139 12 164-66" fill="none" stroke="#f5d57c" stroke-width="15" />
+          <path d="M54-15 93 93l-8 108 56 91 9 93M216-10l-13 103 38 93-10 78 44 103M365-10l-10 105 35 85-22 90 26 104M515-10l-43 90 28 107-20 85 41 100M651-10l-37 99 22 87-5 102 36 81" fill="none" stroke="#fff" stroke-width="13" />
+          <path d="M-10 222h125l37-27h98l32 28h121l33-34h115l37 26h221M117-10l22 95-25 62 31 82M291-10l9 93-22 63 32 77M439-10l-28 90 36 73-19 68M579-10l-22 88 31 70-14 80" fill="none" stroke="#fff" stroke-width="8" />
+          <path d="M0 314c105-26 167 20 242-6s146-12 215 13 147 12 243-15" fill="none" stroke="#b8dce4" stroke-width="20" />
+          <g fill="#718274" font-family="Arial, sans-serif" font-size="15" font-weight="600">
+            <text x="25" y="67">SAN ROQUE</text>
+            <text x="457" y="78">ORTIGAS AVE.</text>
+            <text x="54" y="260">ORCHARD LANE</text>
+            <text x="302" y="331">ANTIPOLO CITY</text>
+          </g>
+          <g fill="#fff" stroke="#dce2d9" stroke-width="2">
+            <rect x="183" y="34" width="49" height="26" rx="6" />
+            <rect x="542" y="235" width="66" height="30" rx="7" />
+            <rect x="346" y="231" width="52" height="24" rx="6" />
+          </g>
+        </svg>
+        <div class="map-marker"><ion-icon name="location-outline"></ion-icon></div>
+        <span class="map-place-label">Verdant Market Hall</span>
+        <small class="map-note">Map preview</small>
+      </div>
+      <div class="location-details">
+        <h2>Verdant Market Hall</h2>
+        <address>18 Orchard Lane, Brgy. San Roque, Antipolo City 1870</address>
+        <div class="detail"><ion-icon name="time-outline"></ion-icon><span>Open daily, 7 AM–8 PM</span></div>
+        <div class="detail"><ion-icon name="call-outline"></ion-icon><a href="tel:+63285550147">+63 (2) 8555 0147</a></div>
+        <button class="directions" type="button" (click)="toggleDirections()" [attr.aria-expanded]="showDirections"><ion-icon name="navigate-outline"></ion-icon>{{ showDirections ? 'Hide directions' : 'Get directions' }}</button>
+        @if (showDirections) {
+          <div class="route" role="region" aria-label="Sample directions to Verdant Market Hall">
+            <strong>Sample route</strong><small>Demo directions · about 18 minutes by car</small>
+            <ol>
+              <li>Start from your current location and head toward Ortigas Avenue Extension.</li>
+              <li>Turn toward Brgy. San Roque and continue to Orchard Lane.</li>
+              <li>Look for Verdant Market Hall at 18 Orchard Lane.</li>
+            </ol>
+            <small>Route details are illustrative and may not reflect live traffic or your actual location.</small>
+          </div>
+        }
+      </div>
+    </section>
+    <p class="caption">Store hours and delivery availability may vary on holidays.</p>
+  } @else if (page === 'faqs') {
+    <p class="intro">Common questions about shopping and delivery.</p>
+    <section class="content-card faq-list">
+      @for (faq of faqs; track faq.question) {
+        <details>
+          <summary>{{ faq.question }}</summary>
+          <p>{{ faq.answer }}</p>
+        </details>
+      }
+    </section>
+    <a class="support-link" routerLink="/help-support">Need more help? Visit Help &amp; Support</a>
+  } @else if (page === 'policies') {
+    <p class="intro">A simple guide to orders, deliveries, and the information you share with us.</p>
+    @for (section of policySections; track section.title) {
+      <section class="content-card text-section"><h2>{{ section.title }}</h2><p>{{ section.body }}</p></section>
+    }
+  } @else {
+    <p class="intro">Please review these terms when using the Fresh of Verdant app.</p>
+    @for (section of termsSections; track section.title) {
+      <section class="content-card text-section"><h2>{{ section.title }}</h2><p>{{ section.body }}</p></section>
+    }
+  }
+</ion-content>

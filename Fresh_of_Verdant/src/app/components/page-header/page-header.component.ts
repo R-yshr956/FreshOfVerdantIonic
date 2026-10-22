@@ -1,15 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { IonHeader, IonToolbar, IonBackButton, IonIcon } from '@ionic/angular';
+import { IonHeader, IonToolbar, IonIcon, MenuController } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { arrowBack, cartOutline, ellipsisHorizontal, lockClosedOutline, optionsOutline, searchOutline } from 'ionicons/icons';
+import { arrowBack, cartOutline, ellipsisHorizontal, lockClosedOutline, menuOutline, optionsOutline, searchOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-page-header',
   templateUrl: './page-header.component.html',
   styleUrls: ['./page-header.component.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonBackButton, IonIcon, RouterLink],
+  imports: [IonHeader, IonToolbar, IonIcon, RouterLink],
 })
 export class PageHeaderComponent {
   @Input() title = '';
@@ -21,8 +21,12 @@ export class PageHeaderComponent {
   @Input() rightLink = '';
   @Output() rightClick = new EventEmitter<void>();
 
-  constructor() {
+  constructor(private menuController: MenuController) {
     // Any icon name passed in through rightIcon must be registered here
-    addIcons({ arrowBack, cartOutline, ellipsisHorizontal, lockClosedOutline, optionsOutline, searchOutline });
+    addIcons({ arrowBack, cartOutline, ellipsisHorizontal, lockClosedOutline, menuOutline, optionsOutline, searchOutline });
+  }
+
+  openMenu() {
+    void this.menuController.open('main-menu');
   }
 }

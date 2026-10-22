@@ -39,13 +39,16 @@
         <div class="card" (click)="open(p)">
           <div class="img-ph thumb">
             @if (p.image) {
-              <img [src]="p.image" [alt]="p.name" (error)="p.image = undefined">
+              <img [src]="p.image" [alt]="p.name" (error)="productService.handleImageError(p)">
             } @else {
               <ion-icon name="image-outline" [attr.aria-label]="p.name + ' image unavailable'"></ion-icon>
             }
           </div>
           <span class="tag">{{ p.category }}</span>
           <strong>{{ p.name }}</strong>
+          @if (reviewCountFor(p.id)) {
+            <span class="product-rating"><ion-icon name="star"></ion-icon>{{ ratingFor(p.id).toFixed(1) }} ({{ reviewCountFor(p.id) }})</span>
+          }
           <div class="foot">
             <span class="price">₱{{ p.price }}/{{ p.unit }}</span>
             <button class="add" (click)="quickAdd(p, $event)"><ion-icon name="add"></ion-icon> Add</button>

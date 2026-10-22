@@ -2,18 +2,71 @@ ion-content {
     --background: var(--fv-bg);
 }
 
+.promo-track {
+    display: flex;
+    margin: 14px 16px 0;
+    overflow-x: auto;
+    border-radius: 18px;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar { display: none; }
+}
+
 .banner {
     position: relative;
-    height: 150px;
-    margin: 14px 16px 0;
-    border-radius: 18px;
+    display: flex;
     align-items: flex-end;
-    justify-content: flex-start;
-    background: linear-gradient(135deg, #3b4a3f, #6d8a74); // placeholder for the banner photo
+    box-sizing: border-box;
+    flex: 0 0 100%;
+    height: 150px;
+    overflow: hidden;
+    border-radius: 18px;
+    scroll-snap-align: start;
+    background: linear-gradient(120deg, #355e43, #709e72);
     color: #fff;
+
+    &:nth-child(2) { background: linear-gradient(120deg, #315d45, #75a87c); }
+    &:nth-child(3) { background: linear-gradient(120deg, #59462c, #9b8050); }
+
+    &::after {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(90deg, rgba(24, 50, 34, .72) 0%, rgba(24, 50, 34, .43) 52%, rgba(24, 50, 34, .02) 100%);
+        content: '';
+        pointer-events: none;
+    }
+
+    &:nth-child(3)::after {
+        background: linear-gradient(90deg, rgba(24, 50, 34, .02) 0%, rgba(24, 50, 34, .3) 42%, rgba(24, 50, 34, .82) 100%);
+    }
+
+    &:nth-child(3) .banner-text {
+        margin-left: auto;
+        text-align: right;
+    }
+}
+
+.banner-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
 }
 
 .banner-text {
+    position: relative;
+    z-index: 2;
+    width: 65%;
+    box-sizing: border-box;
     padding: 16px;
     text-align: left;
 
@@ -47,14 +100,17 @@ ion-content {
     gap: 5px;
     margin: 8px 0 12px;
 
-    i {
+    button {
         width: 6px;
         height: 6px;
+        padding: 0;
+        border: 0;
         border-radius: 3px;
         background: #c9d3cc;
+        cursor: pointer;
     }
 
-    i.on {
+    button.on {
         width: 16px;
         background: var(--fv-green);
     }

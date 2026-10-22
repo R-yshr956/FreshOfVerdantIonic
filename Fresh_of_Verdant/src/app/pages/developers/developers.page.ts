@@ -13,11 +13,11 @@ import { HeroHeaderComponent } from '../../components/hero-header/hero-header.co
 })
 export class DevelopersPage {
   team = [
-    { name: 'John Paulino', role: 'Leader', focus: 'Fresh of Verdant' },
-    { name: 'Khyle Gamboa', role: 'Member', focus: 'Fresh of Verdant' },
-    { name: 'Iyad Ghazal', role: 'Member', focus: 'Fresh of Verdant' },
-    { name: 'Reyniel Jose', role: 'Member', focus: 'Fresh of Verdant' },
-    { name: 'Carl Pardo', role: 'Member', focus: 'Fresh of Verdant' },
+    { name: 'John Paulino', role: 'Leader', focus: 'Fresh of Verdant', photoUrl: 'https://cdn.phototourl.com/member/2026-10-22-a909004a-db8b-43d8-8489-9312135265ee.png', photoFailed: false },
+    { name: 'Khyle Gamboa', role: 'Member', focus: 'Fresh of Verdant', photoUrl: 'https://cdn.phototourl.com/member/2026-10-22-64041d71-7c2e-4733-86aa-5d9246057618.png', photoFailed: false },
+    { name: 'Iyad Ghazal', role: 'Member', focus: 'Fresh of Verdant', photoUrl: 'https://cdn.phototourl.com/member/2026-10-22-cf952cdc-1de2-47dc-aa24-48955a2c6091.png', photoFailed: false },
+    { name: 'Reniel Jose', role: 'Member', focus: 'Fresh of Verdant', photoUrl: 'https://cdn.phototourl.com/member/2026-10-22-35bce0c0-1f9d-487a-95f6-1975a48e0303.png', photoFailed: false },
+    { name: 'Carl Pardo', role: 'Member', focus: 'Fresh of Verdant', photoUrl: 'https://cdn.phototourl.com/member/2026-10-22-cc2cea81-38cf-4977-9470-dcf55438fe1e.png', photoFailed: false },
   ];
 
   constructor() {

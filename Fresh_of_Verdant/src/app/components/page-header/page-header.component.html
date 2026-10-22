@@ -1,16 +1,20 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar class="ph" [class.profile-toolbar]="title === 'Profile & Settings'" [class.orders-toolbar]="title === 'My Orders'">
+  <ion-toolbar class="ph" [class.profile-toolbar]="title === 'Profile & Settings'" [class.orders-toolbar]="title === 'My Orders'" [class.checkout-toolbar]="title === 'Checkout Address'" [class.tracker-toolbar]="title === 'Order Tracker'" [class.reviews-toolbar]="title === 'Reviews & Feedback'">
     <div class="row">
-      <ion-back-button class="back" [defaultHref]="backHref" text="" icon="arrow-back"></ion-back-button>
+      <button class="back" type="button" aria-label="Open navigation menu" (click)="openMenu()"><ion-icon name="menu-outline"></ion-icon></button>
 
-      <div class="texts" [class.left]="align === 'left'">
+      <div class="texts" [class.left]="align === 'left'" [class.checkout-text]="title === 'Checkout Address'" [class.tracker-text]="title === 'Order Tracker'" [class.reviews-text]="title === 'Reviews & Feedback'">
         @if (subtitle) { <small>{{ subtitle }}</small> }
         <h1>{{ title }}</h1>
       </div>
 
       <div class="right">
         @if (rightIcon) {
-          <a class="circle" [routerLink]="rightLink || null" (click)="rightClick.emit()"><ion-icon [name]="rightIcon"></ion-icon></a>
+          @if (rightLink) {
+            <a class="circle" [routerLink]="rightLink" (click)="rightClick.emit()"><ion-icon [name]="rightIcon"></ion-icon></a>
+          } @else {
+            <button class="circle" type="button" aria-label="More options" (click)="rightClick.emit()"><ion-icon [name]="rightIcon"></ion-icon></button>
+          }
         }
         @if (rightLabel) { <span>{{ rightLabel }}</span> }
       </div>

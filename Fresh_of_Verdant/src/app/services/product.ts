@@ -5,6 +5,7 @@ import { catchError, finalize, map, of, TimeoutError, timeout } from 'rxjs';
 import { Product } from '../models/product';
 import { ProductDetailModal } from '../components/product-detail-modal/product-detail-modal.component';
 import { ApiProduct, ApiService } from './api';
+import { ReviewService } from './reviews';
 
 export interface ProductCategory {
   id: number;
@@ -14,6 +15,22 @@ export interface ProductCategory {
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
+  private readonly missingProductImages: Record<string, { asset: string; sourceFile: string; creator: string }> = {
+    teff: { asset: 'teff.jpg', sourceFile: 'Lalibela-Teff.jpg', creator: 'Ji-Elle · CC BY-SA 3.0' },
+    einkorn: { asset: 'einkorn.jpg', sourceFile: 'Triticum monococcum MHNT.BOT.2015.2.37.jpg', creator: 'Roger Culos · CC BY-SA 3.0' },
+    buckwheat: { asset: 'buckwheat.jpg', sourceFile: 'Fagopyrum esculentum seeds (boekweit).jpg', creator: 'Rasbak · CC BY-SA 3.0' },
+    millet: { asset: 'millet.png', sourceFile: 'Milletgrains.png', creator: 'Zigzig20s · Public domain' },
+    sorghum: { asset: 'sorghum.jpg', sourceFile: 'Sorghum bicolor subsp. bicolor seeds.jpg', creator: 'Tracey Slotta / USDA · Public domain' },
+    rye: { asset: 'rye.jpg', sourceFile: 'Rye grains rotated.jpg', creator: 'Agronom · CC BY-SA 3.0' },
+    oat: { asset: 'oats.jpg', sourceFile: 'Uncooked oat groats.jpg', creator: 'Acsenray · CC0' },
+    barley: { asset: 'barley.jpg', sourceFile: 'Barley grains.jpg', creator: 'National Institute of Korean Language · CC BY-SA 2.0 KR' },
+    corn: { asset: 'corn.jpg', sourceFile: 'Corn kernels.jpg', creator: 'Danielgrad · CC BY-SA 3.0' },
+    wheat: { asset: 'wheat.jpg', sourceFile: 'Triticum aestivum naked wheat kernels.jpg', creator: 'Peer Schilperoord · CC BY-SA 4.0' },
+    rice: { asset: 'rice.jpg', sourceFile: 'Rice grains.jpg', creator: 'Vadakkan · CC BY-SA 3.0' },
+    olive: { asset: 'olives.jpg', sourceFile: 'Black Olives.JPG', creator: 'Miansari66 · Public domain' },
+    blueberry: { asset: 'blueberries.jpg', sourceFile: 'Wet blueberries close up.jpg', creator: 'Comfreak · CC0' },
+  };
+
   readonly products = signal<Product[]>([]);
   readonly categories = signal<string[]>([]);
   readonly categoryItems = signal<ProductCategory[]>([]);
@@ -31,7 +48,7 @@ export class ProductService {
 
   isFavorite(product: Product) { return this.favorites().includes(product.id); }
 
-  constructor(private modalCtrl: ModalController, private api: ApiService) {
+  constructor(private modalCtrl: ModalController, private api: ApiService, private reviewService: ReviewService) {
     this.load();
   }
 
@@ -98,6 +115,8 @@ export class ProductService {
   }
 
   private toProduct(row: ApiProduct): Product {
+    const fallback = this.productImageFallback(row.product_name);
+    const apiImage = this.api.assetUrl(row.image_url);
     return {
       id: Number(row.product_id),
       name: row.product_name,
@@ -105,9 +124,34 @@ export class ProductService {
       price: Number(row.price),
       unit: row.unit,
       description: row.description ?? '',
-      rating: 4.2 + Math.random() * 0.8,
+      rating: 0,
       ...this.nutrition(row.product_name),
-      image: this.api.assetUrl(row.image_url),
+      image: fallback?.url ?? apiImage,
+      fallbackImage: fallback?.url,
+      fallbackImageCredit: fallback ? { text: fallback.creator, url: fallback.source } : undefined,
+      imageCredit: fallback ? { text: fallback.creator, url: fallback.source } : undefined,
+    };
+  }
+
+  handleImageError(product: Product) {
+    if (product.fallbackImage && product.image !== product.fallbackImage) {
+      product.image = product.fallbackImage;
+      product.imageCredit = product.fallbackImageCredit;
+      return;
+    }
+    product.image = undefined;
+    product.imageCredit = undefined;
+  }
+
+  private productImageFallback(productName: string): { url: string; source: string; creator: string } | undefined {
+    const key = productName.trim().toLowerCase().replace(/oes$/, 'o').replace(/ies$/, 'y').replace(/s$/, '');
+    const image = this.missingProductImages[key];
+    if (!image) return undefined;
+
+    return {
+      url: `/assets/images/products/${image.asset}`,
+      source: `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(image.sourceFile)}`,
+      creator: image.creator,
     };
   }
 
@@ -137,7 +181,30 @@ export class ProductService {
     return { calories: match[0], protein: match[1], carbs: match[2], vitaminC: match[3] };
   }
 
-  readonly featured = computed(() => this.products().filter((product) => product.featured).concat(this.products().filter((product) => !product.featured)).slice(0, 4));
+  private readonly featuredNames = ['apple', 'strawberry', 'mango', 'blueberry'];
+  private normalizeName(name: string) { return name.trim().toLowerCase().replace(/oes$/, 'o').replace(/ies$/, 'y').replace(/s$/, ''); }
+
+  readonly featured = computed(() => {
+    const all = this.products();
+    const preferred = this.featuredNames
+      .map((name) => all.find((product) => this.normalizeName(product.name) === name))
+      .filter((product): product is Product => !!product);
+    const flagged = all.filter((product) => product.featured && !preferred.some((item) => item.id === product.id));
+    return [...preferred, ...flagged, ...all.filter((product) => !preferred.some((item) => item.id === product.id) && !flagged.some((item) => item.id === product.id))].slice(0, 4);
+  });
+
+  readonly popular = computed(() => {
+    const all = this.products();
+    const rated = all.map((product) => {
+      const reviews = this.reviewService.forProduct(product.id);
+      return { product, count: reviews.length, average: reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0 };
+    }).filter((item) => item.count > 0).sort((a, b) => b.average - a.average || b.count - a.count).map((item) => item.product);
+    const curated = this.featured();
+    return [...rated, ...curated.filter((product) => !rated.some((item) => item.id === product.id)), ...all.filter((product) => !rated.some((item) => item.id === product.id) && !curated.some((item) => item.id === product.id))].slice(0, 4);
+  });
+
+  isFeatured(product: Product) { return this.featured().some((item) => item.id === product.id); }
+  isPopular(product: Product) { return this.popular().some((item) => item.id === product.id); }
 
   async openDetail(product: Product) {
     const modal = await this.modalCtrl.create({

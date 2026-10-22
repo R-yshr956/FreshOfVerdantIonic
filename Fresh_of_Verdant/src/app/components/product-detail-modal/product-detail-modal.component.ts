@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
-import { IonContent, IonIcon, ModalController } from '@ionic/angular';
+import { AlertController, IonContent, IonIcon, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { addOutline, cartOutline, close, heart, heartOutline, imageOutline, leafOutline, removeOutline, star, starOutline } from 'ionicons/icons';
 import { Product } from '../../models/product';
 import { CartService } from '../../services/cart';
 import { ProductService } from '../../services/product';
+import { ReviewService, UserReview } from '../../services/reviews';
 
 @Component({
   selector: 'app-product-detail-modal',
@@ -19,14 +20,25 @@ export class ProductDetailModal {
   liked = false;
   private touchStartX = 0;
 
-  constructor(private modalCtrl: ModalController, private cart: CartService, public products: ProductService) {
+  constructor(private modalCtrl: ModalController, private alertCtrl: AlertController, private cart: CartService, public products: ProductService, public reviewService: ReviewService) {
     addIcons({ addOutline, cartOutline, close, heart, heartOutline, imageOutline, leafOutline, removeOutline, star, starOutline });
   }
 
-  toggleFavorite() {
+  async toggleFavorite() {
+    const removing = this.products.isFavorite(this.product);
+    const alert = await this.alertCtrl.create({
+      message: removing ? 'Are you removing that Wishlist?' : 'Are you adding that Wishlist?',
+      buttons: [
+        { text: 'Yes', role: 'confirm' },
+        { text: 'No', role: 'cancel' },
+      ],
+    });
+    await alert.present();
+    const { role } = await alert.onDidDismiss();
+    if (role !== 'confirm') return;
+
     this.products.toggleFavorite(this.product);
     this.liked = this.products.isFavorite(this.product);
-    window.alert(this.liked ? 'Added to My Wishlist' : 'Removed from Wishlist');
   }
 
   onSwipeStart(event: TouchEvent) { this.touchStartX = event.changedTouches[0]?.clientX ?? 0; }
@@ -52,7 +64,9 @@ export class ProductDetailModal {
     return this.product.price * this.qty;
   }
 
-  get roundedRating() { return Math.round(this.product.rating); }
+  get productReviews(): UserReview[] { return this.reviewService.forProduct(this.product.id); }
+  get productRating() { return this.productReviews.length ? this.productReviews.reduce((sum, review) => sum + review.rating, 0) / this.productReviews.length : 0; }
+  get roundedRating() { return Math.round(this.productRating); }
 
   get healthNotes(): string[] {
     const notes: Record<string, string[]> = {

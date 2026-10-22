@@ -1,4 +1,4 @@
-<app-page-header subtitle="DELIVERY DETAILS" title="Checkout Address" align="left" rightIcon="lock-closed-outline" rightLabel="2 of 3"></app-page-header>
+<app-page-header class="checkout-header" subtitle="DELIVERY DETAILS" title="Checkout Address" align="left" rightIcon="lock-closed-outline" rightLabel="2 of 3"></app-page-header>
 
 <ion-content>
   <!-- Recipient -->
@@ -8,12 +8,12 @@
     <div class="two">
       <label class="fld">
         <ion-icon name="person-outline"></ion-icon>
-        <span><small>FULL NAME</small><input [(ngModel)]="recipient.name" /></span>
+        <span><small>FULL NAME</small><input name="recipientName" type="text" autocomplete="name" [(ngModel)]="recipient.name" /></span>
       </label>
-      <label class="fld"><ion-icon name="mail-outline"></ion-icon><span><small>EMAIL</small><input type="email" [(ngModel)]="recipient.email" /></span></label>
+      <label class="fld"><ion-icon name="mail-outline"></ion-icon><span><small>EMAIL</small><input name="recipientEmail" type="email" autocomplete="email" [(ngModel)]="recipient.email" /></span></label>
       <label class="fld">
         <ion-icon name="call-outline"></ion-icon>
-        <span><small>PHONE NUMBER</small><input type="tel" [(ngModel)]="recipient.phone" /></span>
+        <span><small>PHONE NUMBER</small><input name="recipientPhone" type="tel" autocomplete="tel" [(ngModel)]="recipient.phone" /></span>
       </label>
     </div>
   </section>

@@ -7,6 +7,7 @@ import { GreenHeaderComponent } from '../../components/green-header/green-header
 import { Product } from '../../models/product';
 import { CartService } from '../../services/cart';
 import { ProductService } from '../../services/product';
+import { ReviewService } from '../../services/reviews';
 
 @Component({
   selector: 'app-wishlist',
@@ -16,7 +17,7 @@ import { ProductService } from '../../services/product';
   imports: [IonContent, IonIcon, RouterLink, GreenHeaderComponent],
 })
 export class WishlistPage {
-  constructor(public products: ProductService, private cart: CartService) {
+  constructor(public products: ProductService, private cart: CartService, public reviewService: ReviewService) {
     addIcons({ cartOutline, heart, heartOutline, imageOutline, star });
   }
 
@@ -26,6 +27,10 @@ export class WishlistPage {
   }
 
   open(product: Product) { this.products.openDetail(product); }
+  ratingFor(product: Product) {
+    const reviews = this.reviewService.forProduct(product.id);
+    return reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : null;
+  }
   remove(product: Product, event: Event) { event.stopPropagation(); this.products.toggleFavorite(product); }
   addToCart(product: Product, event: Event) { event.stopPropagation(); this.cart.add(product, 1); }
 }

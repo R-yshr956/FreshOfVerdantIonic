@@ -1,29 +1,29 @@
-<app-page-header subtitle="FARMBOX MARKET" title="Order Tracker" align="left" rightIcon="ellipsis-horizontal" rightLabel="3 of 3"></app-page-header>
+<app-page-header subtitle="FARMBOX MARKET" title="Order Tracker" align="left" rightIcon="ellipsis-horizontal" rightLabel="3 of 3" (rightClick)="openOrderActions()"></app-page-header>
 
 <ion-content>
   <div class="confirmed">
     <span class="big-check"><ion-icon name="checkmark"></ion-icon></span>
-    <h2>Order confirmed!</h2>
+    <h2>Delivery tracking</h2>
     <b>Order ID #{{ orderId }}</b>
-    <p>Your harvest is reserved and headed to the farm hub.</p>
-    <a class="fv-btn menu-back" routerLink="/home">Back to menu</a>
+    <p>Follow your order through each delivery step.</p>
+    <a class="fv-btn menu-back" routerLink="/home">Main menu</a>
   </div>
 
   <!-- Receipt -->
   <section class="card">
     <div class="card-head"><strong>Receipt breakdown</strong><span class="pill">CONFIRMED</span></div>
-    @for (i of cart.items(); track i.id) {
+    @for (i of orderItems; track i.id) {
       <div class="line"><span>{{ i.qty > 1 ? i.qty + '× ' : '' }}{{ i.name }}</span><span>₱{{ i.price * i.qty }}</span></div>
     }
-    <div class="line top"><span>Shipping address</span><span class="r">28 Sampaguita St.,<br />San Roque, Marikina</span></div>
-    <div class="line"><span>Payment method</span><span>Cash on Delivery</span></div>
-    <div class="line total"><span>Total paid</span><b>₱{{ cart.total() }}</b></div>
+    <div class="line top"><span>Shipping address</span><span class="r">{{ shippingAddress }}</span></div>
+    <div class="line"><span>Payment method</span><span>{{ paymentMethod }}</span></div>
+    <div class="line total"><span>Total paid</span><b>₱{{ orderTotal }}</b></div>
   </section>
 
   <!-- Journey -->
   <section class="card">
     <div class="card-head">
-      <div><strong>Farm-to-door journey</strong><small>Arriving tomorrow, 8 AM–12 PM</small></div>
+      <div><strong>Delivery process</strong><small>Expected {{ deliveryWindow }}</small></div>
       <ion-icon name="swap-vertical-outline"></ion-icon>
     </div>
 
@@ -40,15 +40,5 @@
 </ion-content>
 
 <ion-footer class="ion-no-border">
-  <div class="partner">
-    <div class="avatar img-ph"><ion-icon name="person-outline"></ion-icon></div>
-    <div class="who">
-      <small>YOUR DELIVERY PARTNER</small>
-      <strong>Carlo Reyes · ★ 4.9</strong>
-      <small>Honda Click · NCF 2714</small>
-    </div>
-    <button><ion-icon name="call-outline"></ion-icon></button>
-    <button><ion-icon name="chatbubble-outline"></ion-icon></button>
-  </div>
   <p class="help"><ion-icon name="call-outline"></ion-icon> Need help? Call (02) 8800-FARM</p>
 </ion-footer>

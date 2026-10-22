@@ -36,6 +36,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/products/products.page').then( m => m.ProductsPage)
   },
   {
+    path: 'categories',
+    redirectTo: 'folder/categories',
+    pathMatch: 'full'
+  },
+  {
     path: 'cart',
     loadComponent: () => import('./pages/cart/cart.page').then( m => m.CartPage)
   },
@@ -62,6 +67,10 @@ export const routes: Routes = [
   {
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings.page').then((m) => m.SettingsPage)
+  },
+  {
+    path: 'security',
+    loadComponent: () => import('./pages/security/security.page').then((m) => m.SecurityPage)
   },
   {
     path: 'orders',
@@ -98,5 +107,30 @@ export const routes: Routes = [
   {
     path: 'contact',
     loadComponent: () => import('./pages/contact/contact.page').then( m => m.ContactPage)
+  },
+  {
+    path: 'help-support',
+    loadComponent: () => import('./pages/info/info.page').then((m) => m.InfoPage),
+    data: { page: 'support' },
+  },
+  {
+    path: 'location',
+    loadComponent: () => import('./pages/info/info.page').then((m) => m.InfoPage),
+    data: { page: 'location' },
+  },
+  {
+    path: 'faqs',
+    loadComponent: () => import('./pages/info/info.page').then((m) => m.InfoPage),
+    data: { page: 'faqs' },
+  },
+  {
+    path: 'policies',
+    loadComponent: () => import('./pages/info/info.page').then((m) => m.InfoPage),
+    data: { page: 'policies' },
+  },
+  {
+    path: 'terms',
+    loadComponent: () => import('./pages/info/info.page').then((m) => m.InfoPage),
+    data: { page: 'terms' },
   },
 ];

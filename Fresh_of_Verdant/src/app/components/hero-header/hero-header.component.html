@@ -1,7 +1,7 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar class="hero">
-    <div class="row">
-      <ion-menu-button class="menu-btn"></ion-menu-button>
+  <ion-toolbar class="hero" [class.text-black]="textBlack">
+    <div class="row" [class.text-black]="textBlack">
+      <button class="menu-btn" type="button" aria-label="Open navigation menu" (click)="openMenu()"><ion-icon name="menu-outline"></ion-icon></button>
       <div class="texts">
         <small>{{ eyebrow }}</small>
         <h1>{{ title }}</h1>

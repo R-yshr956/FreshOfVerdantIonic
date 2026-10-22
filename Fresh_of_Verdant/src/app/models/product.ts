@@ -12,6 +12,9 @@ export interface Product {
   vitaminC: number;
   featured?: boolean; // shows in "Fresh picks" on the home page
   image?: string;
+  fallbackImage?: string;
+  fallbackImageCredit?: { text: string; url: string };
+  imageCredit?: { text: string; url: string };
 }
 
 export interface CartItem {

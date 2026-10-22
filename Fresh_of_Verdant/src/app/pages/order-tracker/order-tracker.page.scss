@@ -192,51 +192,6 @@ ion-content {
     }
 }
 
-.partner {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 8px 14px 0;
-    padding: 10px 12px;
-    border-radius: 16px;
-    background: var(--fv-green);
-    color: #fff;
-
-    .avatar {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        font-size: 20px;
-    }
-
-    .who {
-        flex: 1;
-
-        small {
-            display: block;
-            font-size: 9px;
-            opacity: .9;
-        }
-
-        strong {
-            font-size: 14px;
-        }
-    }
-
-    button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 38px;
-        height: 38px;
-        border: 0;
-        border-radius: 50%;
-        background: #fff;
-        color: var(--fv-green-dark);
-        font-size: 18px;
-    }
-}
-
 .help {
     margin: 8px 0 12px;
     text-align: center;

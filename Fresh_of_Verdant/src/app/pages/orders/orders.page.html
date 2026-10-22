@@ -17,14 +17,22 @@
 
       <div class="mid">
         <div class="thumbs">
-          @for (t of thumbs; track t) { <span class="img-ph"><ion-icon name="image-outline"></ion-icon></span> }
+          @for (item of previewsFor(o); track item.id) {
+            <span class="img-ph">
+              @if (item.image) {
+                <img [src]="item.image" [alt]="item.name + ' in this order'" (error)="item.image = undefined">
+              } @else {
+                <ion-icon name="image-outline" [attr.aria-label]="item.name + ' image unavailable'"></ion-icon>
+              }
+            </span>
+          }
         </div>
         <span class="count">{{ o.items }}</span>
         <div class="total"><small>TOTAL</small><b>₱{{ o.total }}</b></div>
       </div>
 
       <div class="btns">
-        <button class="fv-btn" routerLink="/order-tracker">Track Order</button>
+        <button class="fv-btn" [routerLink]="['/order-tracker']" [queryParams]="{ order: o.id }">Track Order</button>
         <button class="outline" (click)="reorder(o.id)">Reorder</button>
       </div>
     </div>

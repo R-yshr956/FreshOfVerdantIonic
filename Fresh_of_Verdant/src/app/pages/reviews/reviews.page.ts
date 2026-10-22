@@ -1,44 +1,76 @@
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { IonContent, IonFooter, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { checkmarkCircle, createOutline, star, starOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
+import { ProductService } from '../../services/product';
+import { ReviewService, UserReview } from '../../services/reviews';
 
 @Component({
   selector: 'app-reviews',
   templateUrl: './reviews.page.html',
   styleUrls: ['./reviews.page.scss'],
   standalone: true,
-  imports: [IonContent, IonFooter, IonIcon, PageHeaderComponent],
+  imports: [IonContent, IonFooter, IonIcon, FormsModule, PageHeaderComponent],
 })
 export class ReviewsPage {
-  average = 4.8;
-  total = 286;
-  stars = [1, 2, 3, 4, 5];
+  readonly stars = [1, 2, 3, 4, 5];
+  showForm = false;
+  author = '';
+  rating = 0;
+  text = '';
+  productId: number | null = null;
+  formError = '';
+  submitted = false;
 
-  bars = [
-    { star: 5, count: 232 },
-    { star: 4, count: 34 },
-    { star: 3, count: 12 },
-    { star: 2, count: 5 },
-    { star: 1, count: 3 },
-  ];
-
-  reviews = [
-    { initials: 'ML', name: 'Maya Lim', rating: 5, date: 'Oct 2, 2026', text: 'Super fresh organic tomatoes, delivered right on time!' },
-    { initials: 'AR', name: 'Anton Reyes', rating: 5, date: 'Sep 29, 2026', text: 'Crisp greens, careful packaging, and everything arrived chilled. My new weekly staple.' },
-    { initials: 'SC', name: 'Sofia Cruz', rating: 5, date: 'Sep 24, 2026', text: 'The mangoes were perfectly ripe and sweet. Fresh of Verdant never disappoints.' },
-  ];
-
-  constructor() {
+  constructor(public reviewService: ReviewService, public productService: ProductService) {
     addIcons({ checkmarkCircle, createOutline, star, starOutline });
   }
 
-  pct(count: number) {
-    return (count / this.total) * 100;
+  get reviews(): UserReview[] {
+    return [...this.reviewService.reviews()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
-  writeReview() {
-    // TODO: open a form / modal
+  get total() { return this.reviews.length; }
+  get average() { return this.total ? this.reviews.reduce((sum, review) => sum + review.rating, 0) / this.total : 0; }
+
+  get bars() {
+    return this.stars.slice().reverse().map((star) => ({
+      star,
+      count: this.reviews.filter((review) => review.rating === star).length,
+    }));
+  }
+
+  pct(count: number) { return this.total ? (count / this.total) * 100 : 0; }
+  formatDate(date: string) { return new Date(date).toLocaleDateString(); }
+
+  initials(name: string) {
+    return name.trim().split(/\s+/).slice(0, 2).map((part) => part.charAt(0).toUpperCase()).join('');
+  }
+
+  submitReview() {
+    this.formError = '';
+    const name = this.author.trim();
+    const reviewText = this.text.trim();
+    if (!name || !reviewText || !this.rating) {
+      this.formError = 'Add your name, choose a rating, and write your review.';
+      return;
+    }
+
+    const product = this.productService.products().find((item) => item.id === this.productId) ?? null;
+    this.reviewService.add({
+      author: name,
+      rating: this.rating,
+      text: reviewText,
+      productId: product?.id ?? null,
+      productName: product?.name ?? null,
+    });
+    this.author = '';
+    this.rating = 0;
+    this.text = '';
+    this.productId = null;
+    this.showForm = false;
+    this.submitted = true;
   }
 }

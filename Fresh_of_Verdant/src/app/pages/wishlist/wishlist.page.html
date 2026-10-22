@@ -18,13 +18,13 @@
       @for (product of favorites; track product.id) {
         <article class="product-card" (click)="open(product)">
           <div class="photo">
-            @if (product.image) { <img [src]="product.image" [alt]="product.name" (error)="product.image = undefined"> }
+            @if (product.image) { <img [src]="product.image" [alt]="product.name" (error)="products.handleImageError(product)"> }
             @else { <ion-icon name="image-outline" [attr.aria-label]="product.name + ' image unavailable'"></ion-icon> }
             <button class="heart" aria-label="Remove from wishlist" (click)="remove(product, $event)"><ion-icon name="heart"></ion-icon></button>
           </div>
           <span class="category">{{ product.category }}</span>
           <h2>{{ product.name }}</h2>
-          <div class="rating"><ion-icon name="star"></ion-icon> {{ product.rating.toFixed(1) }}</div>
+          @if (ratingFor(product); as rating) { <div class="rating"><ion-icon name="star"></ion-icon> {{ rating.toFixed(1) }} · {{ reviewService.forProduct(product.id).length }} reviews</div> } @else { <div class="rating no-rating">No reviews yet</div> }
           <div class="card-foot"><strong>₱{{ product.price }} <small>/ {{ product.unit }}</small></strong><button class="add" aria-label="Add to cart" (click)="addToCart(product, $event)"><ion-icon name="cart-outline"></ion-icon></button></div>
         </article>
       }

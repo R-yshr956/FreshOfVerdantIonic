@@ -1,3 +1,13 @@
 ion-content { --background:var(--fv-bg); --color:#111; }.page-title,.section-title { margin:20px 16px 10px; color:#111; font-size:18px; font-weight:800; }.section-title { margin-top:24px; font-size:14px; }
 .setting-row { display:flex; align-items:center; gap:12px; margin:0 16px 9px; padding:13px; border-radius:14px; background:#fff; color:#111; text-decoration:none; box-shadow:0 2px 8px #0000000a; }.icon { display:grid; place-items:center; width:40px; height:40px; flex:none; border-radius:11px; background:var(--fv-green-soft); color:var(--fv-green-dark); font-size:20px; }.copy { flex:1; }.copy strong,.copy small { display:block; }.copy strong { font-size:13px; }.copy small { margin-top:4px; color:#687169; font-size:11px; }.arrow { color:#858d87; font-size:17px; }
 .version { display:flex; align-items:center; justify-content:center; gap:7px; margin:32px 16px 24px; color:#69716a; font-size:11px; }.version ion-icon { color:var(--fv-green-dark); }.version small { margin-left:3px; }
+.preference-card { display:flex; align-items:center; gap:12px; margin:0 16px 9px; padding:13px; border-radius:14px; background:#fff; box-shadow:0 2px 8px #0000000a; color:#111; }
+.preference-heading { display:flex; align-items:center; gap:12px; }
+.theme-options { display:flex; gap:7px; margin:12px 0 0 52px; }
+.theme-options button { display:flex; align-items:center; gap:5px; padding:7px 9px; border:1px solid #e1e8e2; border-radius:20px; background:#fff; color:#303630; font:inherit; font-size:11px; cursor:pointer; }
+.theme-options button.active { border-color:var(--fv-green-dark); background:var(--fv-green-soft); color:#111; font-weight:700; }
+.preference-card[aria-labelledby] { display:block; }
+.swatch { width:12px; height:12px; border-radius:50%; }
+.swatch.green { background:#00c455; }.swatch.light { background:#f4f6f4; border:1px solid #d5ddd7; }.swatch.dark { background:#202820; }
+.language-card select { max-width:112px; padding:8px 22px 8px 9px; border:1px solid #e1e8e2; border-radius:10px; background:#fff; color:#111; font:inherit; font-size:11px; }
+@media (max-width:360px) { .theme-options { margin-left:0; } .theme-options button { padding:7px; } }

@@ -8,6 +8,48 @@
   --ion-font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
 }
 
+html.theme-light {
+  --fv-green: #00b84f;
+  --fv-green-dark: #008f3e;
+  --fv-green-soft: #eaf7ee;
+  --fv-bg: #fff;
+}
+
+html.theme-dark {
+  color-scheme: dark;
+  --fv-green: #20d875;
+  --fv-green-dark: #42df86;
+  --fv-green-soft: #20392b;
+  --fv-bg: #121713;
+  --ion-background-color: #121713;
+  --ion-text-color: #f2f5f2;
+}
+
+html.theme-dark ion-content {
+  --background: var(--fv-bg);
+  --color: #f2f5f2;
+}
+
+html.theme-dark ion-content :is(.setting-row, .preference-card, .app-card, .mini, .story, .visit, .service, .info, .event, .notice, .card) {
+  background-color: #202820;
+  color: #f2f5f2;
+}
+
+html.theme-dark ion-content :is(.setting-row, .preference-card, .app-card, .mini, .story, .visit, .service, .info, .event, .notice, .card) :not(ion-icon):not(.icon):not(.ico):not(.badge):not(.tag) {
+  color: #f2f5f2;
+}
+
+html.theme-dark ion-content :is(h1, h2, h3, h4, p, strong, b, small, label, .version):not(.icon):not(.ico):not(.badge):not(.tag) {
+  color: #f2f5f2;
+}
+
+html.theme-dark ion-content .theme-options button,
+html.theme-dark ion-content .language-card select {
+  border-color: #405046;
+  background: #182019;
+  color: #f2f5f2;
+}
+
 /* Image placeholder: swap for <img> later */
 .img-ph {
   display: flex;

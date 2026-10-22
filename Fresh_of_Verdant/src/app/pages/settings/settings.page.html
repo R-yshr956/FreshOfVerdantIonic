@@ -5,6 +5,22 @@
   <a class="setting-row" routerLink="/addresses"><span class="icon"><ion-icon name="location-outline"></ion-icon></span><span class="copy"><strong>Addresses</strong><small>Manage your delivery locations</small></span><ion-icon class="arrow" name="chevron-forward"></ion-icon></a>
   <a class="setting-row" routerLink="/payment"><span class="icon"><ion-icon name="card-outline"></ion-icon></span><span class="copy"><strong>Payment</strong><small>Choose Pay on Cash or Cashless</small></span><ion-icon class="arrow" name="chevron-forward"></ion-icon></a>
   <a class="setting-row" routerLink="/notifications"><span class="icon"><ion-icon name="notifications-outline"></ion-icon></span><span class="copy"><strong>Notifications</strong><small>Set the updates you want to receive</small></span><ion-icon class="arrow" name="chevron-forward"></ion-icon></a>
+  <h2 class="section-title">Appearance</h2>
+  <section class="preference-card" aria-labelledby="theme-label">
+    <div class="preference-heading"><span class="icon"><ion-icon name="color-palette-outline"></ion-icon></span><span class="copy"><strong id="theme-label">Theme</strong><small>Choose the look that feels right</small></span></div>
+    <div class="theme-options" role="group" aria-label="Theme">
+      <button type="button" *ngFor="let option of themes" [class.active]="theme === option.id" [attr.aria-pressed]="theme === option.id" (click)="setTheme(option.id)">
+        <span class="swatch" [class]="'swatch ' + option.id"></span>{{ option.label }}
+      </button>
+    </div>
+  </section>
+  <section class="preference-card language-card">
+    <span class="icon"><ion-icon name="language-outline"></ion-icon></span>
+    <span class="copy"><strong>Language</strong><small>Choose your preferred language</small></span>
+    <select aria-label="Language" [value]="language" (change)="setLanguage($event)">
+      <option value="English">English</option><option value="Filipino">Filipino</option><option value="Dutch">Dutch</option>
+    </select>
+  </section>
   <h2 class="section-title">Support</h2>
   <a class="setting-row" routerLink="/contact"><span class="icon"><ion-icon name="help-circle-outline"></ion-icon></span><span class="copy"><strong>Help & Support</strong><small>Get help with your account or orders</small></span><ion-icon class="arrow" name="chevron-forward"></ion-icon></a>
   <div class="version"><ion-icon name="settings-outline"></ion-icon><span>Fresh of Verdant</span><small>Version 2.4.0</small></div>

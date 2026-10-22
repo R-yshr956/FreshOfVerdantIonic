@@ -1,5 +1,8 @@
 ion-content { --background: #fff; }
 
+.image-credit { display:block; margin:0 0 8px; color:#66716a; font-size:10px; line-height:1.35; }
+.image-credit a { color:#333; text-decoration:underline; }
+
 .hero {
   position: relative;
   height: 220px;
@@ -89,18 +92,29 @@ h1 { margin: 10px 0 2px; font-size: 24px; font-weight: 800; color: #111; }
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
+  color: #000;
   small { display: block; color: #777; font-size: 11px; }
 }
 .stepper {
   display: flex;
   align-items: center;
   border-radius: 12px;
-  background: #f1f1f1;
+  background: #fff;
   overflow: hidden;
-  button { width: 44px; height: 44px; border: 0; background: transparent; font-size: 20px; }
-  button { color: var(--fv-green-dark); }
-  .plus { background: transparent; color: var(--fv-green-dark); }
-  span { min-width: 36px; text-align: center; font-weight: 700; }
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--fv-green);
+    color: #fff;
+    font-size: 20px;
+  }
+  button ion-icon { color: #fff; }
+  span { min-width: 36px; text-align: center; color: #000; font-weight: 700; }
 }
 
 .tabs { display:flex; gap:20px; border-bottom:1px solid #e5e8e5; padding:10px 0; margin-bottom:12px; color:#333; }

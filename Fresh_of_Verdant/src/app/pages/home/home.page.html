@@ -1,15 +1,23 @@
 <app-green-header subtitle="Good morning, John" title="Fresh of Verdant"></app-green-header>
 
 <ion-content>
-  <!-- Banner (image placeholder) -->
-  <div class="banner img-ph">
-    <div class="banner-text">
-      <span class="tag">WEEKEND HARVEST</span>
-      <h2>Save 20% on farm-fresh bundles</h2>
-      <p>Picked this morning. Delivered today.</p>
-    </div>
+  <div class="promo-track" #promoTrack (scroll)="onPromoScroll()" aria-label="Promotions">
+    @for (promo of promos; track promo.tag) {
+      <article class="banner">
+        <img class="banner-image" [src]="promo.image" [alt]="promo.alt" />
+        <div class="banner-text">
+          <span class="tag">{{ promo.tag }}</span>
+          <h2>{{ promo.title }}</h2>
+          <p>{{ promo.subtitle }}</p>
+        </div>
+      </article>
+    }
   </div>
-  <div class="dots"><i class="on"></i><i></i><i></i></div>
+  <div class="dots" aria-label="Choose promotion">
+    @for (promo of promos; track promo.tag; let i = $index) {
+      <button type="button" [class.on]="promoIndex === i" [attr.aria-label]="'Show promotion ' + (i + 1)" [attr.aria-current]="promoIndex === i ? 'true' : null" (click)="showPromo(i)"></button>
+    }
+  </div>
 
   <div class="stats">
     <div class="stat">
@@ -24,7 +32,7 @@
 
   <div class="section-head">
     <div><h3>Fresh Picks</h3><small>Harvested near you</small></div>
-    <a routerLink="/products">View all</a>
+    <a routerLink="/products" [queryParams]="{ featured: true }">View all</a>
   </div>
 
   @if (products.loading()) {
@@ -39,7 +47,7 @@
       <div class="card" (click)="open(p)">
         <div class="img-ph thumb">
           @if (p.image) {
-            <img [src]="p.image" [alt]="p.name" (error)="p.image = undefined">
+            <img [src]="p.image" [alt]="p.name" (error)="products.handleImageError(p)">
           } @else {
             <ion-icon name="image-outline" [attr.aria-label]="p.name + ' image unavailable'"></ion-icon>
           }
@@ -53,8 +61,8 @@
     }
     </div>
   }
-  <div class="section-head"><div><h3>Popular Freshes</h3><small>Loved by our customers</small></div><a routerLink="/products">See all</a></div>
-  <div class="grid">@for (p of products.products().slice(0, 4); track p.id) { <div class="card" (click)="open(p)"><div class="img-ph thumb">@if (p.image) { <img [src]="p.image" [alt]="p.name" (error)="p.image = undefined"> } @else { <ion-icon name="image-outline"></ion-icon> }</div><strong>{{ p.name }}</strong><div class="foot"><span class="price">₱{{ p.price }} / {{ p.unit }}</span><button class="add" aria-label="Add to cart" (click)="addToCart(p, $event)"><ion-icon name="cart-outline"></ion-icon></button></div></div> }</div>
+  <div class="section-head"><div><h3>Popular Freshes</h3><small>Loved by our customers</small></div><a routerLink="/products" [queryParams]="{ popular: true }">See all</a></div>
+  <div class="grid">@for (p of products.popular(); track p.id) { <div class="card" (click)="open(p)"><div class="img-ph thumb">@if (p.image) { <img [src]="p.image" [alt]="p.name" (error)="products.handleImageError(p)"> } @else { <ion-icon name="image-outline"></ion-icon> }</div><strong>{{ p.name }}</strong><div class="foot"><span class="price">₱{{ p.price }} / {{ p.unit }}</span><button class="add" aria-label="Add to cart" (click)="addToCart(p, $event)"><ion-icon name="cart-outline"></ion-icon></button></div></div> }</div>
   <div class="feedback"><h3>Customer App Rating</h3><strong>4.8 ★</strong><p>Customer feedback helps us keep every harvest fresh.</p><p>“Fresh produce, easy ordering, and friendly delivery.”</p></div>
   <footer class="home-footer">Fresh of Verdant brings farm fresh fruits, vegetables and grains closer to your home with convenient ordering and local delivery.</footer>
 </ion-content>

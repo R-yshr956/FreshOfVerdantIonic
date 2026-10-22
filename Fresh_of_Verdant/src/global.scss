@@ -40,3 +40,30 @@
 ion-router-outlet ion-content {
   --padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
 }
+
+.support-welcome { display:flex; align-items:center; gap:12px; margin:16px; padding:16px; border-radius:16px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.support-welcome-icon, .support-actions a > span { display:grid; place-items:center; flex:0 0 auto; width:44px; height:44px; border-radius:13px; background:#e7f7ee; color:var(--fv-green-dark); font-size:22px; }
+.support-welcome h2 { margin:0 0 4px; color:#000; font-size:17px; font-weight:800; }
+.support-welcome p { margin:0; color:#000; font-size:12px; }
+.support-search { display:flex; align-items:center; gap:10px; margin:0 16px 20px; padding:0 14px; height:48px; border:1px solid #dfe7e2; border-radius:14px; background:#fff; color:var(--fv-green-dark); }
+.support-search ion-icon { font-size:19px; }
+.support-search input { min-width:0; width:100%; height:100%; border:0; outline:0; background:transparent; color:#000; font:inherit; font-size:13px; }
+.support-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 18px 8px; }
+.support-heading h3, .support-title { margin:0; color:#000; font-size:16px; font-weight:800; }
+.support-heading a { display:flex; align-items:center; color:var(--fv-green-dark); font-size:12px; font-weight:700; text-decoration:none; }
+.support-questions { margin-bottom:20px; }
+.support-empty { margin:0; padding:15px 0; color:#000; font-size:12px; }
+.support-title { margin:0 18px 10px; }
+.support-actions { display:grid; gap:9px; margin:0 16px 20px; }
+.support-actions a { display:grid; grid-template-columns:40px 1fr 18px; grid-template-rows:auto auto; align-items:center; column-gap:11px; min-height:68px; padding:10px 12px; border-radius:15px; background:#fff; color:#000; text-decoration:none; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.support-actions a > span { grid-row:1 / 3; width:40px; height:40px; font-size:19px; }
+.support-actions a strong { align-self:end; font-size:13px; }
+.support-actions a small { align-self:start; margin-top:3px; color:#000; font-size:11px; }
+.support-actions .support-arrow { grid-column:3; grid-row:1 / 3; color:#7a847e; font-size:17px; }
+.support-contact { margin:0 16px 24px; padding:15px; border-radius:16px; background:#fff; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.support-contact h3 { margin:0; color:#000; font-size:14px; }
+.support-contact p { margin:4px 0 12px; color:#000; font-size:11px; }
+.support-contact-button, .support-phone { display:flex; justify-content:center; align-items:center; gap:7px; text-decoration:none; }
+.support-contact-button { min-height:42px; border-radius:12px; background:var(--fv-green); color:#fff; font-size:13px; font-weight:700; }
+.support-phone { margin-top:12px; color:#000; font-size:12px; }
+.support-phone ion-icon { color:var(--fv-green-dark); }
