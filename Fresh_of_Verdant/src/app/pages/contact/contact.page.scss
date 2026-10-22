@@ -33,6 +33,54 @@ h3.bar {
         font-size: 36px;
     }
 
+    .map-preview {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        background: #e9eee2;
+    }
+
+    .map-art {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .map-marker {
+        position: absolute;
+        top: 45%;
+        left: 50%;
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border: 3px solid #fff;
+        border-radius: 50% 50% 50% 4px;
+        background: var(--fv-green-dark);
+        color: #fff;
+        font-size: 19px;
+        box-shadow: 0 2px 7px rgba(0, 0, 0, .25);
+        transform: translate(-50%, -50%) rotate(-45deg);
+
+        ion-icon { transform: rotate(45deg); }
+    }
+
+    .map-place-label {
+        position: absolute;
+        top: calc(45% + 25px);
+        left: 50%;
+        padding: 4px 8px;
+        border-radius: 10px;
+        background: #fff;
+        color: #1f3525;
+        font-size: 9px;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, .16);
+        transform: translateX(-50%);
+    }
+
     .open {
         position: absolute;
         left: 10px;
@@ -127,7 +175,7 @@ h3.bar {
         background: #fff;
         color: #000;
         caret-color: #000;
-        &::placeholder { color: #000; opacity: 1; }
+        &::placeholder { color: #8a949b; opacity: 1; }
     }
 
     .field input { color: #000; caret-color: #000; }

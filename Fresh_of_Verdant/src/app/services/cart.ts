@@ -3,6 +3,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, finalize, map, of, timeout, TimeoutError } from 'rxjs';
 import { CartItem, Product } from '../models/product';
 import { ApiCart, ApiCartItem, ApiService } from './api';
+import { AuthService } from './auth';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -20,7 +22,7 @@ export class CartService {
   tax = computed(() => Math.round(this.subtotal() * 0.04));
   total = computed(() => this.subtotal() + this.deliveryFee + this.tax());
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private auth: AuthService, private router: Router) {}
 
   load() {
     this.loading = true;
@@ -76,7 +78,12 @@ export class CartService {
     return error instanceof Error ? error.message : 'Could not load your saved cart.';
   }
 
-  add(product: Product, qty = 1) {
+  add(product: Product, qty = 1): boolean {
+    if (!this.auth.isAuthenticated) {
+      void this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return false;
+    }
+
     this.saving = true;
     this.error = null;
     const current = this.items().find((item) => item.id === product.id);
@@ -89,6 +96,7 @@ export class CartService {
       },
       error: (error: HttpErrorResponse) => this.handleOfflineError(error, 'Saved on this device. It will be available here while the cart service is offline.'),
     });
+    return true;
   }
 
   clearForSignOut() {
