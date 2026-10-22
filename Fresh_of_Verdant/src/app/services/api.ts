@@ -66,7 +66,7 @@ export class ApiService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<{ role: string }>(`${this.baseUrl}/login`, { email, password }, { withCredentials: true });
+    return this.http.post<{ role: string; fullName?: string; name?: string }>(`${this.baseUrl}/login`, { email, password }, { withCredentials: true });
   }
 
   register(details: { fullName: string; email: string; password: string; phoneNumber?: string }) {

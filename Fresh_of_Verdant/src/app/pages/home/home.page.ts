@@ -7,6 +7,7 @@ import { GreenHeaderComponent } from '../../components/green-header/green-header
 import { ProductService } from '../../services/product';
 import { Product } from '../../models/product';
 import { CartService } from '../../services/cart';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-home',
@@ -25,8 +26,12 @@ export class HomePage {
     { tag: 'SWEET SEASON', title: 'Make room for something fresh', subtitle: 'Browse this week’s fruit picks.', image: 'assets/images/promos/fruit-and-veg.jpg', alt: 'Fresh fruits and vegetables on a dark surface' },
   ];
 
-  constructor(public products: ProductService, private cart: CartService) {
+  constructor(public products: ProductService, private cart: CartService, private auth: AuthService) {
     addIcons({ cartOutline, cubeOutline, imageOutline, sparklesOutline });
+  }
+
+  get greeting() {
+    return this.auth.isAuthenticated ? `Welcome, ${this.auth.currentName() || 'there'}` : 'Welcome to the';
   }
 
   open(product: Product) {

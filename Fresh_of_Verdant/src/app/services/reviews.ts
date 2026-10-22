@@ -31,6 +31,11 @@ export class ReviewService {
     return this.reviews().filter((review) => review.productId === productId);
   }
 
+  clearForSignOut() {
+    this.reviews.set([]);
+    localStorage.removeItem(this.storageKey);
+  }
+
   private load(): UserReview[] {
     try {
       const stored = localStorage.getItem(this.storageKey);

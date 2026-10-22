@@ -4,6 +4,7 @@ import { IonHeader, IonToolbar, IonButtons, IonMenuButton, IonIcon } from '@ioni
 import { addIcons } from 'ionicons';
 import { cartOutline } from 'ionicons/icons';
 import { CartService } from '../../services/cart';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-green-header',
@@ -16,7 +17,7 @@ export class GreenHeaderComponent {
   @Input() subtitle = '';
   @Input() title = '';
 
-  constructor(public cart: CartService) {
+  constructor(public cart: CartService, public auth: AuthService) {
     addIcons({ cartOutline });
   }
 }

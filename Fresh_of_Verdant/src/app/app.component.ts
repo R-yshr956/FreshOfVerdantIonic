@@ -5,6 +5,9 @@ import { addIcons } from 'ionicons';
 import { briefcaseOutline, callOutline, cartOutline, codeSlashOutline, documentTextOutline, gridOutline, helpCircleOutline, headsetOutline, homeOutline, cubeOutline, logOutOutline, mailOutline, personOutline, heartOutline, receiptOutline, navigateOutline, locationOutline, shieldCheckmarkOutline, informationCircleOutline, chevronForward, settingsOutline, timeOutline } from 'ionicons/icons';
 import { filter } from 'rxjs';
 import { CartService } from './services/cart';
+import { AuthService } from './services/auth';
+import { ProductService } from './services/product';
+import { ReviewService } from './services/reviews';
 
 @Component({
   selector: 'app-root',
@@ -46,7 +49,7 @@ export class AppComponent {
     return words.length > 1 ? `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase() : (words[0]?.[0] ?? 'U').toUpperCase();
   }
 
-  constructor(private router: Router, public cart: CartService, private alerts: AlertController) {
+  constructor(private router: Router, public cart: CartService, private alerts: AlertController, public auth: AuthService, private products: ProductService, private reviews: ReviewService) {
     addIcons({ briefcaseOutline, callOutline, cartOutline, codeSlashOutline, documentTextOutline, gridOutline, helpCircleOutline, headsetOutline, homeOutline, cubeOutline, logOutOutline, mailOutline, personOutline, heartOutline, receiptOutline, navigateOutline, locationOutline, shieldCheckmarkOutline, informationCircleOutline, chevronForward, settingsOutline, timeOutline });
 
     // Hide the side menu on splash / login / register / reset password
@@ -61,7 +64,13 @@ export class AppComponent {
     const alert = await this.alerts.create({ header: 'Logout?', message: 'Are you sure about to Log out?', buttons: [{ text: 'NO', role: 'cancel' }, { text: 'YES', role: 'confirm' }] });
     await alert.present();
     const { role } = await alert.onDidDismiss();
-    if (role === 'confirm') this.router.navigateByUrl('/login', { replaceUrl: true });
+    if (role === 'confirm') {
+      this.auth.signOut();
+      this.cart.clearForSignOut();
+      this.products.clearFavoritesForSignOut();
+      this.reviews.clearForSignOut();
+      this.router.navigateByUrl('/login', { replaceUrl: true });
+    }
   }
 
   isMenuItemActive(url: string) { return this.router.url === url; }

@@ -5,9 +5,22 @@
     background: #f1fbf5;
 }
 
+.brand-name {
+    color: var(--fv-green-dark);
+    font-size: 16px;
+    font-weight: 700;
+
+    strong {
+        display: block;
+        color: var(--fv-green);
+        font-size: 20px;
+        font-weight: 800;
+    }
+}
+
 .auth-top { 
     padding-top: 56px;
-    
+
 h1 { 
     margin: 22px 0 4px;
     font-size: 28px;
@@ -17,7 +30,7 @@ h1 {
     
 p {
     margin: 0;
-    color: var(--fv-muted);
+    color: #168147;
     font-size: 14px; 
     } 
 }

@@ -44,6 +44,66 @@ ion-menu ion-content {
   }
 }
 
+.menu-head.guest {
+  padding-top: 40px;
+}
+
+.guest-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  strong {
+    color: #fff;
+    font-size: 17px;
+    line-height: 1.05;
+  }
+
+  span {
+    color: #fff;
+    font-size: 22px;
+  }
+}
+
+.guest-description {
+  max-width: 230px;
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.menu-logo {
+  display: block;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  padding: 4px;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.guest-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+
+  a {
+    display: inline-flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .guest-signin { background: #fff; color: var(--fv-green-dark); }
+  .guest-register { border-color: var(--fv-green); background: var(--fv-green); color: #fff; }
+}
+
 .menu-list {
   padding: 12px;
 }

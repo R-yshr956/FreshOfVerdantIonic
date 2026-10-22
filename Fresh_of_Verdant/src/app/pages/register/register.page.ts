@@ -5,6 +5,7 @@ import { IonContent, IonIcon, IonCheckbox } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { arrowForward, callOutline, chevronForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { ApiService } from '../../services/api';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-register',
@@ -21,7 +22,7 @@ export class RegisterPage {
   error = '';
   loading = false;
 
-  constructor(private router: Router, private api: ApiService) {
+  constructor(private router: Router, private api: ApiService, private auth: AuthService) {
     addIcons({ arrowForward, callOutline, chevronForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline });
   }
 
@@ -46,7 +47,11 @@ export class RegisterPage {
 
     this.loading = true;
     this.api.register({ fullName: this.form.fullName, email: this.form.email, password: this.form.password, phoneNumber: this.form.phone }).subscribe({
-      next: () => this.router.navigateByUrl('/home', { replaceUrl: true }),
+      next: () => {
+        localStorage.setItem('fv-profile-details', JSON.stringify({ 'Full Name': this.form.fullName.trim(), 'Email Address': this.form.email.trim().toLowerCase(), 'Mobile Number': this.form.phone.trim() }));
+        this.auth.signIn(this.form.email, this.form.fullName);
+        void this.router.navigateByUrl('/home', { replaceUrl: true });
+      },
       error: (err) => {
         this.error = err.error?.error ?? 'Unable to register. Check your connection and details.';
         this.loading = false;

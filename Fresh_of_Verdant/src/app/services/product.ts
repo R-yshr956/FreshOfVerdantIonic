@@ -48,6 +48,11 @@ export class ProductService {
 
   isFavorite(product: Product) { return this.favorites().includes(product.id); }
 
+  clearFavoritesForSignOut() {
+    this.favorites.set([]);
+    localStorage.removeItem('fv-favorites');
+  }
+
   constructor(private modalCtrl: ModalController, private api: ApiService, private reviewService: ReviewService) {
     this.load();
   }

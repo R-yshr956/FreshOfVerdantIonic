@@ -11,7 +11,7 @@
 
     <a slot="end" class="cart-btn" routerLink="/cart">
       <ion-icon name="cart-outline"></ion-icon>
-      @if (cart.count() > 0) {
+      @if (auth.isAuthenticated && cart.count() > 0) {
         <span class="badge">{{ cart.count() }}</span>
       }
     </a>
