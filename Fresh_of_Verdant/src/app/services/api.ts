@@ -35,6 +35,11 @@ export interface ApiCart {
   items: ApiCartItem[];
 }
 
+export interface ApiAccount {
+  loggedIn: boolean;
+  user: { userId: number; fullName: string; email: string; role: string };
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly baseUrl = environment.apiBaseUrl;
@@ -66,11 +71,19 @@ export class ApiService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<{ role: string; fullName?: string; name?: string }>(`${this.baseUrl}/login`, { email, password }, { withCredentials: true });
+    return this.http.post<{ role: string; fullName?: string; name?: string; user?: ApiAccount['user'] }>(`${this.baseUrl}/login`, { email, password }, { withCredentials: true });
   }
 
   register(details: { fullName: string; email: string; password: string; phoneNumber?: string }) {
-    return this.http.post<{ login: string }>(`${this.baseUrl}/register`, details, { withCredentials: true });
+    return this.http.post<{ login: string; user?: ApiAccount['user'] }>(`${this.baseUrl}/register`, details, { withCredentials: true });
+  }
+
+  account() {
+    return this.http.get<ApiAccount>(`${this.baseUrl}/isLoggedIn`, { withCredentials: true });
+  }
+
+  logout() {
+    return this.http.post<{ logout: string }>(`${this.baseUrl}/logout`, {}, { withCredentials: true });
   }
 
   cart(): Observable<ApiCart> {

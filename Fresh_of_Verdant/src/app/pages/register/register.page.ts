@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AlertController, IonContent, IonIcon, IonCheckbox } from '@ionic/angular';
+import { AlertController, IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { arrowForward, callOutline, chevronForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
+import { arrowForward, callOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
 
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth';
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
   standalone: true,
-  imports: [IonContent, IonIcon, IonCheckbox, FormsModule, RouterLink],
+  imports: [IonContent, IonIcon, FormsModule, RouterLink],
 })
 export class RegisterPage {
   form = { fullName: '', email: '', phone: '', password: '', confirmPassword: '' };
@@ -27,7 +27,7 @@ export class RegisterPage {
   private readonly maxPasswordLength = 64;
 
   constructor(private router: Router, private api: ApiService, private auth: AuthService, private alertController: AlertController) {
-    addIcons({ arrowForward, callOutline, chevronForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline });
+    addIcons({ arrowForward, callOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline });
   }
 
   register() {
@@ -45,7 +45,8 @@ export class RegisterPage {
       next: () => {
         localStorage.setItem('fv-profile-details', JSON.stringify({ 'Full Name': this.form.fullName.trim(), 'Email Address': this.form.email.trim().toLowerCase(), 'Mobile Number': this.form.phone.trim() }));
         this.auth.signIn(this.form.email, this.form.fullName);
-        void this.router.navigateByUrl('/home', { replaceUrl: true });
+        this.loading = false;
+        void this.showSuccessAndContinue();
       },
       error: (err) => {
         this.error = err.error?.error ?? 'Unable to register. Check your connection and details.';
@@ -97,5 +98,16 @@ export class RegisterPage {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+  private async showSuccessAndContinue() {
+    const alert = await this.alertController.create({
+      header: 'Account created',
+      message: 'Your account has been registered successfully.',
+      buttons: ['Continue'],
+    });
+    await alert.present();
+    await alert.onDidDismiss();
+    await this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 }

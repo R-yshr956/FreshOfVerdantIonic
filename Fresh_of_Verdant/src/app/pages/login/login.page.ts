@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AlertController, IonContent, IonIcon, IonCheckbox } from '@ionic/angular';
+import { AlertController, IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { arrowForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline } from 'ionicons/icons';
 import { ApiService } from '../../services/api';
@@ -12,7 +12,7 @@ import { AuthService } from '../../services/auth';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonIcon, IonCheckbox, FormsModule, RouterLink],
+  imports: [IonContent, IonIcon, FormsModule, RouterLink],
 })
 export class LoginPage {
   email = '';
@@ -48,7 +48,14 @@ export class LoginPage {
     this.loading = true;
     this.api.login(email.toLowerCase(), this.password).subscribe({
       next: (user) => {
-        this.auth.signIn(this.email, user.fullName ?? user.name);
+        const fullName = user.user?.fullName ?? user.fullName ?? user.name;
+        this.auth.signIn(this.email, fullName);
+        if (fullName) {
+          localStorage.setItem('fv-profile-details', JSON.stringify({
+            'Full Name': fullName,
+            'Email Address': email.toLowerCase(),
+          }));
+        }
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/home';
         void this.router.navigateByUrl(returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/home', { replaceUrl: true });
       },

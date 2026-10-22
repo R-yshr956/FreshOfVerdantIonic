@@ -49,16 +49,10 @@ p {
     align-items: center;
     margin: 16px 0 20px;
     font-size: 13px;
-    ion-checkbox {
-        --checkbox-background: #fff;
-        --checkbox-background-checked: #fff;
-        --checkbox-border-color: #d0d8d1;
-        --checkbox-border-color-checked: var(--fv-green-dark);
-        --checkmark-color: var(--fv-green-dark);
-        --size: 18px;
-        font-size: 13px;
-    }
 }
+
+.remember-option { display:flex; align-items:center; gap:7px; color:#222; font-size:13px; cursor:pointer; }
+.remember-option input { width:17px; height:17px; margin:0; accent-color:var(--fv-green-dark); }
 
 .forgot { 
     color: var(--fv-red);

@@ -131,7 +131,7 @@ export class ProductService {
       description: row.description ?? '',
       rating: 0,
       ...this.nutrition(row.product_name),
-      image: fallback?.url ?? apiImage,
+      image: apiImage ?? fallback?.url,
       fallbackImage: fallback?.url,
       fallbackImageCredit: fallback ? { text: fallback.creator, url: fallback.source } : undefined,
       imageCredit: fallback ? { text: fallback.creator, url: fallback.source } : undefined,

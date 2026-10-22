@@ -48,8 +48,9 @@
       @if (fieldErrors['confirmPassword']) { <p class="field-error">{{ fieldErrors['confirmPassword'] }}</p> }
 
       <div class="terms">
-        <ion-checkbox labelPlacement="end" [(ngModel)]="agree" (ionChange)="clearFieldError('terms')">I agree to the Terms &amp; Conditions</ion-checkbox>
-        <ion-icon name="chevron-forward"></ion-icon>
+        <input id="agree-terms" class="terms-checkbox" type="checkbox" name="agreeTerms" [(ngModel)]="agree" (change)="clearFieldError('terms')" [attr.aria-invalid]="fieldErrors['terms'] ? 'true' : null" aria-label="I agree to the Terms and Conditions" />
+        <label for="agree-terms">I agree to the</label>
+        <a routerLink="/terms">Terms &amp; Conditions</a>
       </div>
       @if (fieldErrors['terms']) { <p class="field-error">{{ fieldErrors['terms'] }}</p> }
 

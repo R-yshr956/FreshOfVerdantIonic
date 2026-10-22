@@ -37,6 +37,15 @@ export class CartService {
         return response.items.map((row) => this.toCartItem(row));
       }),
       catchError((error: unknown) => {
+        if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
+          this.user = null;
+          this.items.set([]);
+          this.saveItems([]);
+          this.auth.signOut();
+          void this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
+          this.error = 'Your session expired. Sign in to load your account cart.';
+          return of([] as CartItem[]);
+        }
         this.error = this.items().length
           ? 'Could not connect to sync your cart. Showing the saved items on this device.'
           : this.getLoadError(error);
@@ -158,9 +167,18 @@ export class CartService {
   }
 
   private handleOfflineError(error: HttpErrorResponse, fallback: string) {
-    this.error = error.status === 401 || error.status === 403
-      ? 'Sign in to sync your saved cart. Your device copy is still available.'
-      : error.status === 0 ? 'Cannot reach the cart service. Your changes are saved on this device.' : fallback;
+    if (error.status === 401 || error.status === 403) {
+      this.user = null;
+      this.auth.signOut();
+      this.items.set([]);
+      this.saveItems([]);
+      this.error = 'Your session expired. Sign in to update your account cart.';
+      void this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
+    } else {
+      this.error = error.status === 0
+        ? 'Cannot reach the cart service. Your changes are saved on this device.'
+        : fallback;
+    }
     this.saving = false;
   }
 

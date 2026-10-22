@@ -8,6 +8,7 @@ import { CartService } from './services/cart';
 import { AuthService } from './services/auth';
 import { ProductService } from './services/product';
 import { ReviewService } from './services/reviews';
+import { ApiService } from './services/api';
 
 @Component({
   selector: 'app-root',
@@ -49,7 +50,7 @@ export class AppComponent {
     return words.length > 1 ? `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase() : (words[0]?.[0] ?? 'U').toUpperCase();
   }
 
-  constructor(private router: Router, public cart: CartService, private alerts: AlertController, public auth: AuthService, private products: ProductService, private reviews: ReviewService) {
+  constructor(private router: Router, public cart: CartService, private alerts: AlertController, public auth: AuthService, private products: ProductService, private reviews: ReviewService, private api: ApiService) {
     addIcons({ briefcaseOutline, callOutline, cartOutline, codeSlashOutline, documentTextOutline, gridOutline, helpCircleOutline, headsetOutline, homeOutline, cubeOutline, logOutOutline, mailOutline, personOutline, heartOutline, receiptOutline, navigateOutline, locationOutline, shieldCheckmarkOutline, informationCircleOutline, chevronForward, settingsOutline, timeOutline });
 
     // Hide the side menu on splash / login / register / reset password
@@ -58,6 +59,27 @@ export class AppComponent {
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e: any) => {
       this.showMenu = !noMenu.some((p) => e.urlAfterRedirects.startsWith(p));
     });
+
+    if (this.auth.isAuthenticated) {
+      this.api.account().subscribe({
+        next: ({ user }) => {
+          this.auth.signIn(user.email, user.fullName);
+          localStorage.setItem('fv-profile-details', JSON.stringify({
+            'Full Name': user.fullName,
+            'Email Address': user.email,
+          }));
+        },
+        error: (error) => {
+          if (error.status === 401 || error.status === 403) {
+            this.auth.signOut();
+            this.cart.clearForSignOut();
+            this.products.clearFavoritesForSignOut();
+            this.reviews.clearForSignOut();
+            void this.router.navigateByUrl('/login', { replaceUrl: true });
+          }
+        },
+      });
+    }
   }
 
   async logout() {
@@ -65,12 +87,19 @@ export class AppComponent {
     await alert.present();
     const { role } = await alert.onDidDismiss();
     if (role === 'confirm') {
-      this.auth.signOut();
-      this.cart.clearForSignOut();
-      this.products.clearFavoritesForSignOut();
-      this.reviews.clearForSignOut();
-      this.router.navigateByUrl('/login', { replaceUrl: true });
+      this.api.logout().subscribe({
+        next: () => this.finishLogout(),
+        error: () => this.finishLogout(),
+      });
     }
+  }
+
+  private finishLogout() {
+    this.auth.signOut();
+    this.cart.clearForSignOut();
+    this.products.clearFavoritesForSignOut();
+    this.reviews.clearForSignOut();
+    void this.router.navigateByUrl('/login', { replaceUrl: true });
   }
 
   isMenuItemActive(url: string) { return this.router.url === url; }
