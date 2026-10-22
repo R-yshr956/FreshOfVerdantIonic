@@ -44,6 +44,26 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/profile/profile.page').then( m => m.ProfilePage)
   },
   {
+    path: 'wishlist',
+    loadComponent: () => import('./pages/wishlist/wishlist.page').then((m) => m.WishlistPage)
+  },
+  {
+    path: 'addresses',
+    loadComponent: () => import('./pages/addresses/addresses.page').then((m) => m.AddressesPage)
+  },
+  {
+    path: 'payment',
+    loadComponent: () => import('./pages/payment/payment.page').then((m) => m.PaymentPage)
+  },
+  {
+    path: 'notifications',
+    loadComponent: () => import('./pages/notifications/notifications.page').then((m) => m.NotificationsPage)
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings.page').then((m) => m.SettingsPage)
+  },
+  {
     path: 'orders',
     loadComponent: () => import('./pages/orders/orders.page').then( m => m.OrdersPage)
   },
@@ -62,6 +82,14 @@ export const routes: Routes = [
   {
     path: 'about',
     loadComponent: () => import('./pages/about/about.page').then( m => m.AboutPage)
+  },
+  {
+    path: 'app-history',
+    loadComponent: () => import('./pages/app-history/app-history.page').then(m => m.AppHistoryPage)
+  },
+  {
+    path: 'about-services',
+    loadComponent: () => import('./pages/about-services/about-services.page').then(m => m.AboutServicesPage)
   },
   {
     path: 'developers',

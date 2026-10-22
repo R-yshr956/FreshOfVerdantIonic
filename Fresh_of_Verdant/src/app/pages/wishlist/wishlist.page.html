@@ -1,0 +1,33 @@
+<app-green-header subtitle="YOUR SAVED PICKS" title="Wishlist"></app-green-header>
+
+<ion-content>
+  @if (products.loading() && products.products().length === 0) {
+    <p class="state" role="status">Loading your wishlist…</p>
+  } @else if (products.error() && products.products().length === 0) {
+    <div class="state"><p>{{ products.error() }}</p><button class="browse" (click)="products.load()">Try again</button></div>
+  } @else if (favorites.length === 0) {
+    <section class="empty-state">
+      <div class="empty-heart"><ion-icon name="heart-outline"></ion-icon></div>
+      <h1>Your wishlist is empty</h1>
+      <p>Save products you love to come back to them later.</p>
+      <a class="browse" routerLink="/products">Browse Products</a>
+    </section>
+  } @else {
+    <div class="wishlist-intro"><div><h1>My Wishlist</h1><p>{{ favorites.length }} saved {{ favorites.length === 1 ? 'product' : 'products' }}</p></div><a routerLink="/products">Browse more</a></div>
+    <div class="grid">
+      @for (product of favorites; track product.id) {
+        <article class="product-card" (click)="open(product)">
+          <div class="photo">
+            @if (product.image) { <img [src]="product.image" [alt]="product.name" (error)="product.image = undefined"> }
+            @else { <ion-icon name="image-outline" [attr.aria-label]="product.name + ' image unavailable'"></ion-icon> }
+            <button class="heart" aria-label="Remove from wishlist" (click)="remove(product, $event)"><ion-icon name="heart"></ion-icon></button>
+          </div>
+          <span class="category">{{ product.category }}</span>
+          <h2>{{ product.name }}</h2>
+          <div class="rating"><ion-icon name="star"></ion-icon> {{ product.rating.toFixed(1) }}</div>
+          <div class="card-foot"><strong>₱{{ product.price }} <small>/ {{ product.unit }}</small></strong><button class="add" aria-label="Add to cart" (click)="addToCart(product, $event)"><ion-icon name="cart-outline"></ion-icon></button></div>
+        </article>
+      }
+    </div>
+  }
+</ion-content>

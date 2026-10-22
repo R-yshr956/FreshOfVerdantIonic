@@ -1,0 +1,14 @@
+<app-green-header subtitle="DELIVERY DETAILS" title="Addresses"></app-green-header>
+<ion-content>
+  <div class="heading"><div><h1>Saved Addresses</h1><p>Choose where your fresh order should arrive.</p></div><button (click)="add()">+ Add address</button></div>
+  @for (address of addresses; track address.id) {
+    <article class="address-card"><div class="card-top"><div><span class="label">{{ address.label }}</span>@if(address.isDefault){<span class="default">DEFAULT</span>}</div><button class="edit" (click)="edit(address)">Edit</button></div><strong>{{ address.name }}</strong><p>{{ address.street }}, {{ address.barangay }}, {{ address.city }} {{ address.zip }}</p>@if(address.phone){<small>{{ address.phone }}</small>}<div class="card-actions">@if(!address.isDefault){<button (click)="setDefault(address.id)">Set as default</button>}<button class="remove" (click)="remove(address.id)">Remove</button></div></article>
+  } @empty { <p class="empty">No saved addresses yet. Add an address for delivery.</p> }
+
+  @if (showForm) {
+    <div class="form-card"><h2>{{ editingId ? 'Edit address' : 'Add address' }}</h2><div class="fields">
+      <label>Address label<input [(ngModel)]="draft.label" placeholder="Home, Work…" /></label><label>Full name<input [(ngModel)]="draft.name" autocomplete="name" /></label><label>Phone number<input type="tel" [(ngModel)]="draft.phone" autocomplete="tel" /></label><label class="wide">Street<input [(ngModel)]="draft.street" autocomplete="street-address" /></label>
+      <label>Barangay<select [(ngModel)]="draft.barangay"><option value="">Select barangay</option>@for(b of barangays; track b){<option [value]="b">{{ b }}</option>}</select></label><label>City<select [(ngModel)]="draft.city"><option value="">Select city</option>@for(c of cities; track c){<option [value]="c">{{ c }}</option>}</select></label><label>ZIP code<input inputmode="numeric" [(ngModel)]="draft.zip" /></label>
+    </div><div class="form-actions"><button class="cancel" (click)="cancel()">Cancel</button><button class="save" (click)="save()">Save address</button></div></div>
+  }
+</ion-content>

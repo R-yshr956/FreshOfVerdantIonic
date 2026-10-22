@@ -1,0 +1,7 @@
+<app-green-header subtitle="CHECKOUT PREFERENCES" title="Payment"></app-green-header>
+<ion-content>
+  <div class="intro"><h1>Payment method</h1><p>Select how you prefer to pay for your orders.</p></div>
+  <button class="method" [class.selected]="method === 'cash'" (click)="choose('cash')"><span class="icon"><ion-icon name="cash-outline"></ion-icon></span><span class="copy"><strong>Pay on Cash</strong><small>Pay when your order arrives.</small></span><ion-icon class="check" [name]="method === 'cash' ? 'radio-button-on' : 'radio-button-off'"></ion-icon></button>
+  <button class="method" [class.selected]="method === 'cashless'" (click)="choose('cashless')"><span class="icon"><ion-icon name="phone-portrait-outline"></ion-icon></span><span class="copy"><strong>Cashless</strong><small>Pay digitally using a cashless option.</small></span><ion-icon class="check" [name]="method === 'cashless' ? 'radio-button-on' : 'radio-button-off'"></ion-icon></button>
+  <p class="note">Your selection is saved on this device. Available payment options are Pay on Cash and Cashless.</p>
+</ion-content>

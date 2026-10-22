@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { callOutline, cardOutline, checkmark, chevronForward, heartOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, shieldCheckmarkOutline, starOutline } from 'ionicons/icons';
+import { callOutline, cardOutline, checkmark, chevronForward, heartOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ProductService } from '../../services/product';
 
@@ -16,7 +16,7 @@ import { ProductService } from '../../services/product';
 })
 export class ProfilePage {
   constructor(public products: ProductService) {
-    addIcons({ callOutline, cardOutline, checkmark, chevronForward, heartOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, shieldCheckmarkOutline, starOutline });
+    addIcons({ callOutline, cardOutline, checkmark, chevronForward, heartOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline });
   }
 
   fields = [

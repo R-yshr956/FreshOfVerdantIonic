@@ -10,11 +10,12 @@
     @for (f of fields; track f.label) { <div class="row"><span class="ico"><ion-icon [name]="f.icon"></ion-icon></span><div class="val"><small>{{ f.label }}</small>@if (f.editing) { <input [type]="f.type" [(ngModel)]="f.value" /> } @else { <strong>{{ f.value }}</strong> }</div><button class="edit" (click)="f.editing = !f.editing"><ion-icon [name]="f.editing ? 'checkmark' : 'pencil-outline'"></ion-icon></button></div> }
   </div>
   <h3>Account</h3>
-  <a class="card link" routerLink="/checkout"><span class="ico"><ion-icon name="location-outline"></ion-icon></span><div class="val"><strong>Addresses</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
-  <a class="card link" routerLink="/checkout"><span class="ico"><ion-icon name="card-outline"></ion-icon></span><div class="val"><strong>Payment</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
-  <a class="card link" href="#favorites"><span class="ico"><ion-icon name="heart-outline"></ion-icon></span><div class="val"><strong>My Wishlist</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
-  <a class="card link" routerLink="/profile"><span class="ico"><ion-icon name="notifications-outline"></ion-icon></span><div class="val"><strong>Notifications</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
-  <a class="card link" routerLink="/profile"><span class="ico"><ion-icon name="shield-checkmark-outline"></ion-icon></span><div class="val"><strong>Security & Change Password</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/addresses"><span class="ico"><ion-icon name="location-outline"></ion-icon></span><div class="val"><strong>Addresses</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/payment"><span class="ico"><ion-icon name="card-outline"></ion-icon></span><div class="val"><strong>Payment</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/wishlist"><span class="ico"><ion-icon name="heart-outline"></ion-icon></span><div class="val"><strong>My Wishlist</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/notifications"><span class="ico"><ion-icon name="notifications-outline"></ion-icon></span><div class="val"><strong>Notifications</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/settings"><span class="ico"><ion-icon name="settings-outline"></ion-icon></span><div class="val"><strong>Settings</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/settings"><span class="ico"><ion-icon name="shield-checkmark-outline"></ion-icon></span><div class="val"><strong>Security & Change Password</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
   <a class="card link" routerLink="/reviews"><span class="ico"><ion-icon name="star-outline"></ion-icon></span><div class="val"><strong>Reviews</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
   <h3 id="favorites">My Favorites</h3>
   @for (p of products.products(); track p.id) { @if (products.isFavorite(p)) { <div class="card link"><div class="val"><strong>{{ p.name }}</strong></div><button class="edit" (click)="products.toggleFavorite(p)">Remove</button></div> } }

@@ -3,8 +3,8 @@
 <ion-content>
   <div class="search">
     <ion-icon name="search-outline"></ion-icon>
-    <input type="text" placeholder="Search fresh produce" [(ngModel)]="search" (ngModelChange)="page = 1" />
-    <span class="live"><i></i> LIVE</span>
+    <input type="search" name="product-search" aria-label="Search products" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search fresh produce" [(ngModel)]="search" (ngModelChange)="onSearchChange($event)" />
+    @if (search) { <button type="button" class="clear-search" aria-label="Clear search" (click)="onSearchChange('')">×</button> }
   </div>
 
   <div class="controls">

@@ -20,27 +20,17 @@ ion-content {
 
     input {
         flex: 1;
+        min-width: 0;
+        width: 100%;
         border: 0;
         outline: 0;
         background: transparent;
         font-size: 14px;
+        color: #111;
+        caret-color: var(--fv-green-dark);
     }
 
-    .live {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--fv-green-dark);
-
-        i {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--fv-green);
-        }
-    }
+    .clear-search { flex:none; border:0; background:transparent; color:#555; font-size:22px; line-height:1; padding:4px; }
 }
 
 .chips {

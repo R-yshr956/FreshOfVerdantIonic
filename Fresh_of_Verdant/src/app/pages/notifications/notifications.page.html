@@ -1,0 +1,11 @@
+<app-green-header subtitle="STAY IN THE LOOP" title="Notifications"></app-green-header>
+<ion-content>
+  <div class="intro"><h1>Notification preferences</h1><p>Choose which updates you want to receive.</p></div>
+  <section class="notice-list">
+    <label class="notice"><span class="icon"><ion-icon name="bag-check-outline"></ion-icon></span><span class="copy"><strong>Order updates</strong><small>Order confirmations and status changes</small></span><input type="checkbox" [(ngModel)]="prefs.orders" (change)="save()" /></label>
+    <label class="notice"><span class="icon"><ion-icon name="radio-outline"></ion-icon></span><span class="copy"><strong>Delivery updates</strong><small>Delivery progress and arrival notices</small></span><input type="checkbox" [(ngModel)]="prefs.delivery" (change)="save()" /></label>
+    <label class="notice"><span class="icon"><ion-icon name="megaphone-outline"></ion-icon></span><span class="copy"><strong>Offers and news</strong><small>Special offers and Fresh of Verdant news</small></span><input type="checkbox" [(ngModel)]="prefs.offers" (change)="save()" /></label>
+    <label class="notice"><span class="icon"><ion-icon name="notifications-outline"></ion-icon></span><span class="copy"><strong>App notifications</strong><small>General reminders and account updates</small></span><input type="checkbox" [(ngModel)]="prefs.app" (change)="save()" /></label>
+  </section>
+  <p class="note">Preferences are saved on this device.</p>
+</ion-content>

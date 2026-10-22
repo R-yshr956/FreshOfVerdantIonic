@@ -33,13 +33,19 @@ export class ProductsPage {
     const rows = this.productService.products().filter((p) => {
       const category = p.category.toLowerCase();
       const normalized = category === 'vegetable' || category === 'vegetables' || category === 'vegtable' || category === 'veg tables' ? 'vegetables' : category === 'other' ? 'others' : category === 'fruit' ? 'fruits' : category === 'grain' ? 'grains' : category;
-      return (!this.selectedCategory || normalized === this.selectedCategory.toLowerCase()) && (!q || p.name.toLowerCase().includes(q)) && (!this.featuredOnly || p.featured) && (!this.popularOnly || p.rating >= 4.5);
+      const searchable = `${p.name} ${p.category}`.toLowerCase();
+      return (!this.selectedCategory || normalized === this.selectedCategory.toLowerCase()) && (!q || searchable.includes(q)) && (!this.featuredOnly || p.featured) && (!this.popularOnly || p.rating >= 4.5);
     });
     return [...rows].sort((a, b) => this.sortBy === 'price-asc' ? a.price - b.price : this.sortBy === 'price-desc' ? b.price - a.price : this.sortBy === 'az' ? a.name.localeCompare(b.name) : this.sortBy === 'oldest' ? a.id - b.id : this.sortBy === 'latest' ? b.id - a.id : b.rating - a.rating);
   }
 
   get paged() { const start = (this.page - 1) * this.pageSize; return this.filtered.slice(start, start + this.pageSize); }
   get pageCount() { return Math.max(1, Math.ceil(this.filtered.length / this.pageSize)); }
+
+  onSearchChange(value: string) {
+    this.search = value;
+    this.page = 1;
+  }
 
   pickCategory(cat: string) {
     this.selectedCategory = this.selectedCategory === cat ? null : cat;

@@ -1,0 +1,13 @@
+ion-content { --background:var(--fv-bg); --color:#111; }
+.heading { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:18px 16px 14px; color:#111; }
+.heading h1 { margin:0; font-size:20px; font-weight:800; }.heading p { margin:4px 0 0; color:#667068; font-size:12px; }
+.heading button,.save { border:0; border-radius:10px; padding:11px 13px; background:var(--fv-green); color:white; font-size:12px; font-weight:700; white-space:nowrap; }
+.address-card,.form-card { margin:0 16px 12px; padding:14px; border-radius:15px; background:#fff; color:#111; box-shadow:0 2px 9px #0000000b; }
+.card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }.label { font-size:14px; font-weight:800; }.default { margin-left:8px; color:var(--fv-green-dark); font-size:9px; font-weight:800; }
+.edit,.card-actions button { border:0; background:transparent; color:var(--fv-green-dark); font-size:12px; font-weight:700; }
+.address-card>strong { font-size:14px; }.address-card p { margin:5px 0; color:#303630; font-size:13px; }.address-card small { color:#626b64; font-size:12px; }
+.card-actions { display:flex; justify-content:space-between; border-top:1px solid #edf0ed; margin-top:12px; padding-top:8px; }.card-actions .remove { color:#b33; }
+.empty { margin:30px 16px; color:#606860; text-align:center; }
+.form-card h2 { margin:0 0 12px; font-size:17px; }.fields { display:grid; grid-template-columns:1fr 1fr; gap:10px; }.fields label { display:grid; gap:5px; color:#333; font-size:11px; font-weight:700; }.fields .wide { grid-column:1 / -1; }
+.fields input,.fields select { box-sizing:border-box; width:100%; min-width:0; height:40px; border:1px solid #d6ded8; border-radius:9px; padding:0 9px; background:#fff; color:#111; font-size:13px; }
+.form-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }.cancel { border:1px solid #d6ded8; border-radius:10px; padding:10px 14px; background:white; color:#222; }
