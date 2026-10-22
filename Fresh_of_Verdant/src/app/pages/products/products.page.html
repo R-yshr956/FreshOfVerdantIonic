@@ -1,10 +1,16 @@
-<app-green-header [subtitle]="productService.loading() ? 'Loading products...' : productService.products().length + ' items in today\'s harvest'" title="Browse produce"></app-green-header>
+<app-green-header [subtitle]="productService.loading() ? 'Loading products...' : productService.products().length + ' items in today\'s harvest'" title="Browsing the Freshes"></app-green-header>
 
 <ion-content>
   <div class="search">
     <ion-icon name="search-outline"></ion-icon>
-    <input type="text" placeholder="Search fresh produce" [(ngModel)]="search" />
+    <input type="text" placeholder="Search fresh produce" [(ngModel)]="search" (ngModelChange)="page = 1" />
     <span class="live"><i></i> LIVE</span>
+  </div>
+
+  <div class="controls">
+    <label>Sort by <select [(ngModel)]="sortBy"><option value="price-asc">Price: Lowest to Highest</option><option value="price-desc">Price: Highest to Lowest</option><option value="az">Alphabetical Order</option><option value="latest">Latest first</option><option value="oldest">Oldest first</option></select></label>
+    <label class="filter"><input type="checkbox" [(ngModel)]="featuredOnly" /> Featured Freshes</label>
+    <label class="filter"><input type="checkbox" [(ngModel)]="popularOnly" /> Popular Freshes</label>
   </div>
 
   <div class="chips">
@@ -29,7 +35,7 @@
     <p class="api-state">{{ search || selectedCategory ? 'No products match your search.' : 'No products are available yet.' }}</p>
   } @else {
     <div class="grid">
-      @for (p of filtered; track p.id) {
+      @for (p of paged; track p.id) {
         <div class="card" (click)="open(p)">
           <div class="img-ph thumb">
             @if (p.image) {
@@ -47,5 +53,6 @@
         </div>
       }
     </div>
+    <nav class="pagination"><button [disabled]="page === 1" (click)="page = page - 1">Previous</button><span>Page {{ page }} of {{ pageCount }}</span><button [disabled]="page === pageCount" (click)="page = page + 1">Next</button></nav>
   }
 </ion-content>

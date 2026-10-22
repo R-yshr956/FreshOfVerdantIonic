@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonFooter, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { cardOutline, cashOutline, checkmark, chevronDown, chatboxEllipsesOutline, locationOutline, personOutline, phonePortraitOutline, callOutline, shieldCheckmarkOutline } from 'ionicons/icons';
+import { cardOutline, cashOutline, checkmark, chevronDown, chatboxEllipsesOutline, locationOutline, mailOutline, personOutline, phonePortraitOutline, callOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { CartService } from '../../services/cart';
 
@@ -15,11 +15,11 @@ import { CartService } from '../../services/cart';
   imports: [IonContent, IonFooter, IonIcon, FormsModule, PageHeaderComponent],
 })
 export class CheckoutPage {
-  recipient = { name: 'Mika Santos', phone: '0817 555 0186' };
+  recipient = { name: 'Mika Santos', phone: '0817 555 0186', email: '' };
   address = { street: '28 Sampaguita Street', barangay: 'San Roque', city: 'Marikina City', zip: '1801' };
 
-  barangays = ['San Roque', 'Concepcion Uno', 'Sto. Niño', 'Malanday'];
-  cities = ['Marikina City', 'Quezon City', 'Antipolo City', 'Pasig City'];
+  barangays = ['San Roque', 'Concepcion Uno', 'Sto. Niño', 'Malanday', 'Barangka', 'Calumpang', 'Industrial Valley', 'Jesus de la Peña', 'Marikina Heights', 'Nangka', 'Parang', 'Santa Elena', 'Santo Niño', 'Tumana', 'Fortune'];
+  cities = ['Marikina City', 'Quezon City', 'Antipolo City', 'Pasig City', 'Manila', 'Makati', 'Taguig', 'Pasay', 'Mandaluyong', 'San Juan', 'Caloocan', 'Las Piñas', 'Parañaque', 'Valenzuela', 'Muntinlupa'];
 
   schedules = [
     { id: 'standard', title: 'Standard', fee: 49, time: 'Tomorrow, 8 AM-12 PM' },
@@ -28,16 +28,15 @@ export class CheckoutPage {
   schedule = 'standard';
 
   payments = [
-    { id: 'cod', title: 'Cash on Delivery', desc: 'Pay your driver upon arrival', icon: 'cash-outline' },
-    { id: 'gcash', title: 'GCash', desc: 'Fast and secure e-wallet', icon: 'phone-portrait-outline' },
-    { id: 'card', title: 'Credit Card', desc: 'Visa, Mastercard, JCB', icon: 'card-outline' },
+    { id: 'cod', title: 'Pay on Cash', desc: 'Pay your driver upon arrival', icon: 'cash-outline' },
+    { id: 'cashless', title: 'Cashless', desc: 'Pay digitally on delivery', icon: 'phone-portrait-outline' },
   ];
   payment = 'cod';
 
   notes = '';
 
   constructor(private cart: CartService, private router: Router) {
-    addIcons({ callOutline, cardOutline, cashOutline, checkmark, chevronDown, chatboxEllipsesOutline, locationOutline, personOutline, phonePortraitOutline, shieldCheckmarkOutline });
+    addIcons({ callOutline, cardOutline, cashOutline, checkmark, chevronDown, chatboxEllipsesOutline, locationOutline, mailOutline, personOutline, phonePortraitOutline, shieldCheckmarkOutline });
   }
 
   get fee() {

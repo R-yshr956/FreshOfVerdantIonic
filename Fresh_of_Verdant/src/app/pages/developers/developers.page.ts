@@ -13,11 +13,11 @@ import { HeroHeaderComponent } from '../../components/hero-header/hero-header.co
 })
 export class DevelopersPage {
   team = [
-    { name: 'John Lois', role: 'Product & UX Lead', focus: 'Research · product flows' },
-    { name: 'Khyle', role: 'Mobile App Engineer', focus: 'React Native · accessibility' },
-    { name: 'Iyad', role: 'Backend & API Engineer', focus: 'Services · data integrity' },
-    { name: 'Reyniel', role: 'Quality Assurance Engineer', focus: 'Test systems · reliability' },
-    { name: 'Carl', role: 'Cloud & DevOps Engineer', focus: 'Infrastructure · releases' },
+    { name: 'John Paulino', role: 'Leader', focus: 'Fresh of Verdant' },
+    { name: 'Khyle Gamboa', role: 'Member', focus: 'Fresh of Verdant' },
+    { name: 'Iyad Ghazal', role: 'Member', focus: 'Fresh of Verdant' },
+    { name: 'Reyniel Jose', role: 'Member', focus: 'Fresh of Verdant' },
+    { name: 'Carl Pardo', role: 'Member', focus: 'Fresh of Verdant' },
   ];
 
   constructor() {

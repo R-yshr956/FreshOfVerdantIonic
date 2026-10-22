@@ -194,3 +194,10 @@ ion-content {
     color: #fff;
     font-size: 20px;
 }
+
+.stat, .section-head, .feedback, .home-footer { color: #111; }
+.feedback { margin: 0 16px 16px; padding:16px; border-radius:16px; background:#fff; box-shadow:0 2px 8px #0000000d; }
+.feedback h3 { margin:0 0 8px; }
+.feedback strong { color:var(--fv-green-dark); font-size:20px; }
+.feedback p { margin:8px 0 0; color:#333; font-size:13px; }
+.home-footer { padding:16px; background:#fff; font-size:12px; line-height:1.6; }

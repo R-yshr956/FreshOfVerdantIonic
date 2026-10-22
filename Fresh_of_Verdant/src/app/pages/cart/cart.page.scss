@@ -1,12 +1,23 @@
 ion-content {
     --background: #f4f2ec;
+    color: #111;
+    --padding-top: 0;
 }
+.back { display:grid; place-items:center; width:40px; height:40px; border-radius:12px; background:var(--fv-green-dark); color:white; text-decoration:none; font-size:22px; }
+.head { width:100%; box-sizing:border-box; margin:0; padding:calc(env(safe-area-inset-top, 0px) + 16px) 16px 14px; background:var(--fv-green); color:#111; }
+.cart-page { color:#111; }
+.cart-page .item .info strong { color:#000 !important; }
+.cart-page .sub, .cart-page .sub .delivery, .cart-page .account, .cart-page .info small, .cart-page .summary .save, .cart-page .summary .line, .cart-page .summary .total, .cart-page .summary .total b, .cart-page .trash { color:#111; }
+.stepper button, .stepper span { color:#111; }
+.stepper .plus { color:#111; }
+.summary .fv-btn { font-size:17px; font-weight:800; padding:16px; }
+.summary .fv-btn { color:#fff; }
 
 .head {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 52px 16px 8px;
+    padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 14px;
 
     .logo-box {
         width: 40px;

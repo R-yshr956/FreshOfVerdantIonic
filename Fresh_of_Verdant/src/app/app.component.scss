@@ -17,12 +17,14 @@ ion-menu ion-content {
   text-decoration: none;
 
   .avatar {
+    position: relative;
     width: 64px;
     height: 64px;
     border-radius: 50%;
     border: 3px solid #fff;
     font-size: 30px;
     margin-bottom: 10px;
+    ion-icon { position:absolute; right:-20px; top:20px; font-size:20px; }
   }
 
   h2 {
@@ -45,6 +47,9 @@ ion-menu ion-content {
 .menu-list {
   padding: 12px;
 }
+.menu-section { margin: 0 0 12px; padding: 0 0 10px; border-bottom: 1px solid #e7ece8; }
+.menu-section:last-child { border-bottom: 0; }
+.menu-group { margin: 8px 14px 8px; color:#6b756d; font-size:11px; font-weight:800; letter-spacing:.7px; text-transform:uppercase; }
 
 .menu-item {
   position: relative;

@@ -1,12 +1,12 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, finalize, map, of } from 'rxjs';
+import { catchError, finalize, map, of, timeout, TimeoutError } from 'rxjs';
 import { CartItem, Product } from '../models/product';
 import { ApiCart, ApiCartItem, ApiService } from './api';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
-  items = signal<CartItem[]>([]);
+  items = signal<CartItem[]>(this.restoreItems());
   user: { fullName: string; email: string } | null = null;
   loading = false;
   saving = false;
@@ -25,10 +25,8 @@ export class CartService {
   load() {
     this.loading = true;
     this.error = null;
-    this.user = null;
-    this.items.set([]);
-
     this.api.cart().pipe(
+      timeout({ first: 10000 }),
       map((response: ApiCart) => {
         if (!response || !Array.isArray(response.items)) {
           throw new Error('The cart endpoint returned an unexpected response. Expected a cart with an items array.');
@@ -37,15 +35,15 @@ export class CartService {
         return response.items.map((row) => this.toCartItem(row));
       }),
       catchError((error: unknown) => {
-        this.user = null;
-        this.items.set([]);
-        this.error = this.getLoadError(error);
+        this.error = this.items().length
+          ? 'Could not connect to sync your cart. Showing the saved items on this device.'
+          : this.getLoadError(error);
         return of([] as CartItem[]);
       }),
       finalize(() => {
         this.loading = false;
       }),
-    ).subscribe((items) => this.items.set(items));
+    ).subscribe((items) => { this.items.set(items); this.saveItems(items); });
   }
 
   private toCartItem(row: ApiCartItem): CartItem {
@@ -60,6 +58,7 @@ export class CartService {
   }
 
   private getLoadError(error: unknown): string {
+    if (error instanceof TimeoutError) return 'The cart service did not respond. Check your connection and try again.';
     if (error instanceof HttpErrorResponse) {
       if (error.status === 401 || error.status === 403) {
         return 'Sign in to view your saved cart.';
@@ -80,12 +79,15 @@ export class CartService {
   add(product: Product, qty = 1) {
     this.saving = true;
     this.error = null;
-    this.api.addCartItem(product.id, qty).subscribe({
+    const current = this.items().find((item) => item.id === product.id);
+    const localItem: CartItem = { id: product.id, name: product.name, price: product.price, unit: product.unit, qty: (current?.qty ?? 0) + qty, image: product.image };
+    this.upsertLocal(localItem);
+    this.api.addCartItem(product.id, qty).pipe(timeout({ first: 10000 })).subscribe({
       next: (row) => {
         this.upsert(row);
         this.saving = false;
       },
-      error: (error: HttpErrorResponse) => this.handleError(error, 'Could not add this product to your cart.'),
+      error: (error: HttpErrorResponse) => this.handleOfflineError(error, 'Saved on this device. It will be available here while the cart service is offline.'),
     });
   }
 
@@ -97,45 +99,56 @@ export class CartService {
 
     this.saving = true;
     this.error = null;
-    this.api.setCartItemQuantity(id, quantity).subscribe({
+    this.upsertLocal({ ...item, qty: quantity });
+    this.api.setCartItemQuantity(id, quantity).pipe(timeout({ first: 10000 })).subscribe({
       next: (row) => {
         this.upsert(row);
         this.saving = false;
       },
-      error: (error: HttpErrorResponse) => this.handleError(error, 'Could not update this cart item.'),
+      error: (error: HttpErrorResponse) => this.handleOfflineError(error, 'Change saved on this device. The cart service is offline.'),
     });
   }
 
   remove(id: number) {
     this.saving = true;
     this.error = null;
-    this.api.removeCartItem(id).subscribe({
+    this.items.update((list) => list.filter((item) => item.id !== id));
+    this.saveItems(this.items());
+    this.api.removeCartItem(id).pipe(timeout({ first: 10000 })).subscribe({
       next: () => {
         this.items.update((list) => list.filter((item) => item.id !== id));
         this.saving = false;
       },
-      error: (error: HttpErrorResponse) => this.handleError(error, 'Could not remove this cart item.'),
+      error: (error: HttpErrorResponse) => this.handleOfflineError(error, 'Removal saved on this device. The cart service is offline.'),
     });
   }
 
   private upsert(row: ApiCartItem) {
     const item = this.toCartItem(row);
+    this.upsertLocal(item);
+  }
+
+  private upsertLocal(item: CartItem) {
     this.items.update((list) => list.some((entry) => entry.id === item.id)
       ? list.map((entry) => entry.id === item.id ? item : entry)
       : [...list, item]);
+    this.saveItems(this.items());
   }
 
-  private handleError(error: HttpErrorResponse, fallback: string) {
-    if (error.status === 401 || error.status === 403) {
-      this.user = null;
-      this.items.set([]);
-    }
+  private restoreItems(): CartItem[] {
+    try { return typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('fv-cart-items') ?? '[]') as CartItem[]; }
+    catch { return []; }
+  }
+
+  private saveItems(items: CartItem[]) {
+    if (typeof localStorage !== 'undefined') localStorage.setItem('fv-cart-items', JSON.stringify(items));
+  }
+
+  private handleOfflineError(error: HttpErrorResponse, fallback: string) {
     this.error = error.status === 401 || error.status === 403
-      ? 'Sign in to view and update your saved cart.'
-      : error.status === 0
-        ? 'Cannot reach the backend. Check that it is running on port 3000.'
-        : error.error?.error ?? fallback;
-    this.loading = false;
+      ? 'Sign in to sync your saved cart. Your device copy is still available.'
+      : error.status === 0 ? 'Cannot reach the cart service. Your changes are saved on this device.' : fallback;
     this.saving = false;
   }
+
 }

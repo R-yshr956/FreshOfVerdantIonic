@@ -6,6 +6,7 @@
     --background: transparent;
     --min-height: 64px;
 }
+.ph.profile-toolbar { --background: var(--fv-green); }
 
 .row {
     display: grid;

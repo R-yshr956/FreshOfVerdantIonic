@@ -1,5 +1,5 @@
 <ion-header class="ion-no-border">
-  <ion-toolbar class="ph">
+  <ion-toolbar class="ph" [class.profile-toolbar]="title === 'Profile & Settings'">
     <div class="row">
       <ion-back-button class="back" [defaultHref]="backHref" text="" icon="arrow-back"></ion-back-button>
 
@@ -10,7 +10,7 @@
 
       <div class="right">
         @if (rightIcon) {
-          <button class="circle" (click)="rightClick.emit()"><ion-icon [name]="rightIcon"></ion-icon></button>
+          <a class="circle" [routerLink]="rightLink || null" (click)="rightClick.emit()"><ion-icon [name]="rightIcon"></ion-icon></a>
         }
         @if (rightLabel) { <span>{{ rightLabel }}</span> }
       </div>

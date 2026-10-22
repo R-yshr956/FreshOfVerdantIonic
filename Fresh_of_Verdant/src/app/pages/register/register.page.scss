@@ -47,6 +47,11 @@
     font-size: 12px;
 
     ion-checkbox {
+        --checkbox-background: #fff;
+        --checkbox-background-checked: #fff;
+        --checkbox-border-color: #d0d8d1;
+        --checkbox-border-color-checked: var(--fv-green-dark);
+        --checkmark-color: var(--fv-green-dark);
         --size: 18px;
         font-size: 12px;
     }

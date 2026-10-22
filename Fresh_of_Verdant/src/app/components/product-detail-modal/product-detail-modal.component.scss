@@ -60,7 +60,8 @@ ion-content { --background: #fff; }
   font-size: 11px;
   font-weight: 700;
 }
-.rating { color: #444; font-weight: 600; ion-icon { color: #f5a623; vertical-align: -2px; } }
+.rating { color: #444; font-weight: 600; white-space: nowrap; ion-icon { color: #f5a623; vertical-align: -2px; } }
+.rating-stars { display:inline-flex; gap:1px; margin-right:4px; ion-icon { font-size:13px; } }
 
 h1 { margin: 10px 0 2px; font-size: 24px; font-weight: 800; color: #111; }
 .price { margin: 0 0 8px; color: #666; strong { color: var(--fv-green-dark); font-size: 24px; } }
@@ -97,6 +98,14 @@ h1 { margin: 10px 0 2px; font-size: 24px; font-weight: 800; color: #111; }
   background: #f1f1f1;
   overflow: hidden;
   button { width: 44px; height: 44px; border: 0; background: transparent; font-size: 20px; }
-  .plus { background: var(--fv-green-dark); color: #fff; }
+  button { color: var(--fv-green-dark); }
+  .plus { background: transparent; color: var(--fv-green-dark); }
   span { min-width: 36px; text-align: center; font-weight: 700; }
 }
+
+.tabs { display:flex; gap:20px; border-bottom:1px solid #e5e8e5; padding:10px 0; margin-bottom:12px; color:#333; }
+.tabs strong { color:var(--fv-green-dark); }
+.health { display:grid; gap:7px; margin:12px 0 18px; padding:12px; border-radius:12px; background:#f3f8f4; color:#202820; font-size:13px; }
+.health b { font-size:14px; }
+.reviews { border-top:1px solid #e5e8e5; margin-top:18px; padding-top:12px; color:#222; }
+.reviews h3 { margin:0; }

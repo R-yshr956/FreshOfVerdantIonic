@@ -1,43 +1,22 @@
-<app-page-header title="Profile & Settings" rightIcon="ellipsis-horizontal"></app-page-header>
-
+<app-page-header title="Profile & Settings" rightIcon="cart-outline" rightLink="/cart"></app-page-header>
 <ion-content>
   <div class="who">
-    <!-- Photo placeholder: replace with <img> later -->
-    <div class="photo img-ph"><ion-icon name="person-outline"></ion-icon><i class="check"><ion-icon name="checkmark"></ion-icon></i></div>
-    <div>
-      <h2>John Doe</h2>
-      <p>johndoe@email.com</p>
-      <span class="member">VERDANT MEMBER</span>
-    </div>
+    <label class="photo img-ph" title="Choose a profile photo"><ion-icon name="person-outline"></ion-icon><input type="file" accept="image/*" aria-label="Choose profile photo"><i class="check"><ion-icon name="checkmark"></ion-icon></i></label>
+    <div><h2>John Doe</h2><p>johndoe@email.com</p><span class="member">VERDANT MEMBER</span></div>
   </div>
-
-  <h3>Personal Details</h3>
+  <div class="profile-stats"><a routerLink="/orders"><b>0</b><span>Orders</span></a><a routerLink="/order-tracker"><b>0</b><span>Delivered</span></a><a routerLink="/reviews"><b>0</b><span>Reviews</span></a></div>
+  <h3>Profile Details</h3>
   <div class="card">
-    @for (f of fields; track f.label) {
-      <div class="row">
-        <span class="ico"><ion-icon [name]="f.icon"></ion-icon></span>
-        <div class="val">
-          <small>{{ f.label }}</small>
-          @if (f.editing) {
-            <input [type]="f.type" [(ngModel)]="f.value" />
-          } @else {
-            <strong>{{ f.value }}</strong>
-          }
-        </div>
-        <button class="edit" (click)="f.editing = !f.editing">
-          <ion-icon [name]="f.editing ? 'checkmark' : 'pencil-outline'"></ion-icon>
-        </button>
-      </div>
-    }
+    @for (f of fields; track f.label) { <div class="row"><span class="ico"><ion-icon [name]="f.icon"></ion-icon></span><div class="val"><small>{{ f.label }}</small>@if (f.editing) { <input [type]="f.type" [(ngModel)]="f.value" /> } @else { <strong>{{ f.value }}</strong> }</div><button class="edit" (click)="f.editing = !f.editing"><ion-icon [name]="f.editing ? 'checkmark' : 'pencil-outline'"></ion-icon></button></div> }
   </div>
-
-  <a class="card link" routerLink="/orders">
-    <span class="ico"><ion-icon name="card-outline"></ion-icon></span>
-    <div class="val"><strong>Saved Payment Methods</strong><small class="plain">Visa •••• 4242 · 2 methods</small></div>
-    <ion-icon name="chevron-forward"></ion-icon>
-  </a>
-
-  <a class="security"><ion-icon name="shield-checkmark-outline"></ion-icon> Security & Change Password <ion-icon name="chevron-forward" class="end"></ion-icon></a>
-
+  <h3>Account</h3>
+  <a class="card link" routerLink="/checkout"><span class="ico"><ion-icon name="location-outline"></ion-icon></span><div class="val"><strong>Addresses</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/checkout"><span class="ico"><ion-icon name="card-outline"></ion-icon></span><div class="val"><strong>Payment</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" href="#favorites"><span class="ico"><ion-icon name="heart-outline"></ion-icon></span><div class="val"><strong>My Wishlist</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/profile"><span class="ico"><ion-icon name="notifications-outline"></ion-icon></span><div class="val"><strong>Notifications</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/profile"><span class="ico"><ion-icon name="shield-checkmark-outline"></ion-icon></span><div class="val"><strong>Security & Change Password</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/reviews"><span class="ico"><ion-icon name="star-outline"></ion-icon></span><div class="val"><strong>Reviews</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <h3 id="favorites">My Favorites</h3>
+  @for (p of products.products(); track p.id) { @if (products.isFavorite(p)) { <div class="card link"><div class="val"><strong>{{ p.name }}</strong></div><button class="edit" (click)="products.toggleFavorite(p)">Remove</button></div> } }
   <button class="fv-btn save" (click)="save()"><ion-icon name="checkmark"></ion-icon> Save Changes</button>
 </ion-content>
