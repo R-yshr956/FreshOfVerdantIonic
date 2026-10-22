@@ -70,6 +70,10 @@ export class LoginPage {
   clearEmailError() { this.emailError = ''; this.error = ''; }
   clearPasswordError() { this.passwordError = ''; this.error = ''; }
 
+  goToRegister() {
+    void this.router.navigateByUrl('/register');
+  }
+
   private async showAlert(message: string) {
     const alert = await this.alertController.create({
       header: 'Unable to sign in',

@@ -70,3 +70,20 @@ p {
   a { color: var(--fv-green-dark); font-weight: 700; text-decoration: none; }
   .secure i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--fv-green); margin-right: 6px; }
 }
+
+.signup-link {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  margin: -6px -6px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--fv-green-dark);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+}
