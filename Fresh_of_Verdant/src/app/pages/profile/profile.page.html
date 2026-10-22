@@ -4,13 +4,46 @@
     <label class="photo img-ph" title="Choose a profile photo"><span class="initials">{{ profileInitials }}</span><input type="file" accept="image/*" aria-label="Choose profile photo"><i class="check"><ion-icon name="checkmark"></ion-icon></i></label>
     <div><h2>{{ profileName }}</h2><p>{{ profileEmail }}</p><span class="member">VERDANT MEMBER</span></div>
   </div>
-  <div class="profile-stats"><a routerLink="/orders"><b>0</b><span>Orders</span></a><a routerLink="/order-tracker"><b>0</b><span>Delivered</span></a><a routerLink="/reviews"><b>{{ reviewService.reviews().length }}</b><span>Reviews</span></a></div>
+  <div class="profile-stats"><a routerLink="/orders"><b>{{ orderHistory.count() }}</b><span>Orders</span></a><a routerLink="/order-tracker"><b>{{ orderHistory.deliveredCount() }}</b><span>Delivered</span></a><a routerLink="/reviews"><b>{{ reviewService.reviews().length }}</b><span>Reviews</span></a></div>
   <h3>Profile Details</h3>
   <div class="card">
-    @for (f of fields; track f.label) { <div class="row"><span class="ico"><ion-icon [name]="f.icon"></ion-icon></span><div class="val"><small>{{ f.label }}</small>@if (f.editing) { <input [type]="f.type" [(ngModel)]="f.value" /> } @else { <strong>{{ f.value }}</strong> }</div><button class="edit" (click)="f.editing = !f.editing"><ion-icon [name]="f.editing ? 'checkmark' : 'pencil-outline'"></ion-icon></button></div> }
+    @for (f of fields; track f.label) {
+      <div class="row">
+        <span class="ico"><ion-icon [name]="f.icon"></ion-icon></span>
+        <div class="val">
+          <small>{{ f.label }}</small>
+          @if (f.editing) {
+            @if (f.label === 'Mobile Number') {
+              <div class="phone-input"><span>+63</span><input type="tel" inputmode="numeric" maxlength="10" [ngModel]="phoneDigits(f.value)" (ngModelChange)="updatePhone($event)" aria-label="Mobile number after +63" /></div>
+            } @else {
+              <input [type]="f.type" [(ngModel)]="f.value" />
+            }
+          } @else { <strong>{{ f.value }}</strong> }
+        </div>
+        <button class="edit" [attr.aria-label]="f.editing ? 'Done editing ' + f.label : 'Edit ' + f.label" (click)="f.editing = !f.editing"><ion-icon [name]="f.editing ? 'checkmark' : 'pencil-outline'"></ion-icon></button>
+      </div>
+      @if (f.label === 'Location Address' && f.editing) {
+        <div class="address-picker">
+          <div class="dummy-map" role="application" aria-label="Sample map. Drag or tap to move the location pin." (pointerdown)="startMapPinDrag($event)" (pointermove)="moveMapPin($event)" (pointerup)="endMapPinDrag()" (pointercancel)="endMapPinDrag()">
+            <svg viewBox="0 0 600 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <rect width="600" height="250" fill="#e6eee5" />
+              <path d="M-20 52 170 86 310 32 620 82M-20 206 168 164 330 218 620 166M95-20 150 270M360-20 320 270M510-20 450 270" fill="none" stroke="#fff" stroke-width="24" />
+              <path d="M-20 52 170 86 310 32 620 82M-20 206 168 164 330 218 620 166M95-20 150 270M360-20 320 270M510-20 450 270" fill="none" stroke="#d3dfd3" stroke-width="2" />
+              <path d="m218 0 38 75-40 49 56 58-12 68M0 128l140-15 98 40 122-24 240 30" fill="none" stroke="#d4e6cf" stroke-width="17" />
+            </svg>
+            <span class="map-road road-one">SAMPAGUITA ST.</span><span class="map-road road-two">QUEZON AVE.</span>
+            <span class="map-pin" [style.left.%]="mapPinX" [style.top.%]="mapPinY"><ion-icon name="location-outline"></ion-icon></span>
+          </div>
+          <p>Drag or tap the sample map to move the pin. The address is a local estimate.</p>
+          <button type="button" class="map-select locate-button" [disabled]="isLocating" (click)="locateMe()"><ion-icon name="locate-outline"></ion-icon> {{ isLocating ? 'Finding location…' : 'Use my location' }}</button>
+          <input type="text" [(ngModel)]="f.value" aria-label="Location address" placeholder="Enter street and city" />
+          <button type="button" class="map-select" (click)="selectAddress(f)">Use this address</button>
+        </div>
+      }
+    }
   </div>
   <h3>Account</h3>
-  <a class="card link" routerLink="/addresses"><span class="ico"><ion-icon name="location-outline"></ion-icon></span><div class="val"><strong>Addresses</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <button type="button" class="card link account-link" (click)="openAddresses()" aria-label="Open saved addresses"><span class="ico"><ion-icon name="location-outline"></ion-icon></span><div class="val"><strong>Addresses</strong></div><ion-icon name="chevron-forward"></ion-icon></button>
   <a class="card link" routerLink="/payment"><span class="ico"><ion-icon name="card-outline"></ion-icon></span><div class="val"><strong>Payment</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
   <a class="card link" routerLink="/wishlist"><span class="ico"><ion-icon name="heart-outline"></ion-icon></span><div class="val"><strong>My Wishlist</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
   <a class="card link" routerLink="/notifications"><span class="ico"><ion-icon name="notifications-outline"></ion-icon></span><div class="val"><strong>Notifications</strong></div><ion-icon name="chevron-forward"></ion-icon></a>

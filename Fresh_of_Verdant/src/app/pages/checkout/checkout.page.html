@@ -24,26 +24,27 @@
     <p class="hint">We deliver right to your doorstep.</p>
     <label class="fld full">
       <ion-icon name="location-outline"></ion-icon>
-      <span><small>STREET</small><input [(ngModel)]="address.street" /></span>
+      <span><small>STREET</small><input name="street" type="text" autocomplete="address-line1" maxlength="120" placeholder="House number and street" required [(ngModel)]="address.street" /></span>
     </label>
     <div class="two">
       <label class="fld sel">
         <span><small>BARANGAY</small>
-          <select [(ngModel)]="address.barangay">
+          <select name="barangay" required [(ngModel)]="address.barangay">
+            <option value="" disabled>Select barangay</option>
             @for (b of barangays; track b) { <option [value]="b">{{ b }}</option> }
           </select></span>
         <ion-icon name="chevron-down"></ion-icon>
       </label>
       <label class="fld sel">
         <span><small>CITY</small>
-          <select [(ngModel)]="address.city">
+          <select name="city" required [ngModel]="address.city" (ngModelChange)="onCityChange($event)">
             @for (c of cities; track c) { <option [value]="c">{{ c }}</option> }
           </select></span>
         <ion-icon name="chevron-down"></ion-icon>
       </label>
     </div>
     <label class="fld half">
-      <span><small>ZIP CODE</small><input [(ngModel)]="address.zip" /></span>
+      <span><small>ZIP CODE</small><input name="zip" type="text" inputmode="numeric" maxlength="4" placeholder="ZIP code" [(ngModel)]="address.zip" /></span>
     </label>
   </section>
 
@@ -82,7 +83,7 @@
 
 <ion-footer class="ion-no-border">
   <div class="foot">
-    <button class="fv-btn" (click)="placeOrder()">Place Order · ₱{{ total }} <ion-icon name="checkmark"></ion-icon></button>
+    <button class="fv-btn" [disabled]="placingOrder || cart.items().length === 0" (click)="placeOrder()">{{ placingOrder ? 'Placing Order…' : 'Place Order · ₱' + total }} <ion-icon name="checkmark"></ion-icon></button>
     <small><ion-icon name="shield-checkmark-outline"></ion-icon> Your information is encrypted and securely handled.</small>
   </div>
 </ion-footer>

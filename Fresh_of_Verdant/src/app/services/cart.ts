@@ -1,10 +1,11 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, finalize, map, of, timeout, TimeoutError } from 'rxjs';
+import { catchError, finalize, map, of, tap, timeout, TimeoutError } from 'rxjs';
 import { CartItem, Product } from '../models/product';
 import { ApiCart, ApiCartItem, ApiService } from './api';
 import { AuthService } from './auth';
 import { Router } from '@angular/router';
+import { OrderHistoryService } from './order-history';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -22,7 +23,7 @@ export class CartService {
   tax = computed(() => Math.round(this.subtotal() * 0.04));
   total = computed(() => this.subtotal() + this.deliveryFee + this.tax());
 
-  constructor(private api: ApiService, private auth: AuthService, private router: Router) {}
+  constructor(private api: ApiService, private auth: AuthService, private router: Router, private orderHistory: OrderHistoryService) {}
 
   load() {
     this.loading = true;
@@ -42,6 +43,7 @@ export class CartService {
           this.items.set([]);
           this.saveItems([]);
           this.auth.signOut();
+          this.orderHistory.clearForSignOut();
           void this.router.navigate(['/login'], { queryParams: { returnUrl: '/cart' } });
           this.error = 'Your session expired. Sign in to load your account cart.';
           return of([] as CartItem[]);
@@ -113,6 +115,14 @@ export class CartService {
     this.saveItems([]);
   }
 
+  clearAfterCheckout() {
+    return this.api.clearCart().pipe(tap(() => {
+      this.items.set([]);
+      this.saveItems([]);
+      this.error = null;
+    }));
+  }
+
   change(id: number, delta: number) {
     const item = this.items().find((entry) => entry.id === id);
     if (!item) return;
@@ -170,6 +180,7 @@ export class CartService {
     if (error.status === 401 || error.status === 403) {
       this.user = null;
       this.auth.signOut();
+      this.orderHistory.clearForSignOut();
       this.items.set([]);
       this.saveItems([]);
       this.error = 'Your session expired. Sign in to update your account cart.';

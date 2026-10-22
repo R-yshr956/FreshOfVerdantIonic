@@ -23,13 +23,18 @@ export class OrderTrackerPage {
   paymentMethod = 'Cash on Delivery';
   deliveryWindow = 'Tomorrow, 8 AM-12 PM';
 
-  // state: done | active | next | pending
-  steps = [
-    { title: 'Order Confirmed', desc: 'We received your order and reserved the produce.', meta: '9:42 AM', state: 'done' },
-    { title: 'Packed at Farm Hub', desc: 'Farmers are sorting and packing your fresh picks.', meta: 'In progress', state: 'active' },
-    { title: 'Out for Delivery', desc: 'Your driver will share a live arrival update.', meta: 'Next', state: 'next' },
-    { title: 'Delivered', desc: 'Farm-fresh goodness at your doorstep.', meta: 'Pending', state: 'pending' },
-  ];
+  get steps() {
+    return this.order
+      ? this.history.timeline(this.order)
+      : [
+          { title: 'Order Confirmed', desc: 'We received your order and reserved the produce.', meta: 'In progress', state: 'active' },
+          { title: 'Packed at Farm Hub', desc: 'Farmers are sorting and packing your fresh picks.', meta: 'Next', state: 'pending' },
+          { title: 'Out for Delivery', desc: 'Your driver is on the way with your order.', meta: 'Pending', state: 'pending' },
+          { title: 'Delivered', desc: 'Farm-fresh goodness is at your doorstep.', meta: 'Pending', state: 'pending' },
+        ];
+  }
+
+  get currentStatus() { return this.order ? this.history.statusFor(this.order) : 'Confirmed'; }
 
   constructor(
     public cart: CartService,
@@ -37,7 +42,7 @@ export class OrderTrackerPage {
     private toastCtrl: ToastController,
     private router: Router,
     route: ActivatedRoute,
-    history: OrderHistoryService,
+    private history: OrderHistoryService,
   ) {
     addIcons({ callOutline, chatbubbleOutline, checkmark, imageOutline, personOutline, swapVerticalOutline });
     const requestedId = route.snapshot.queryParamMap.get('order');
@@ -51,12 +56,7 @@ export class OrderTrackerPage {
       this.shippingAddress = this.order.address;
       this.paymentMethod = this.order.payment;
       this.deliveryWindow = this.order.deliveryWindow;
-      this.steps[0].meta = this.formatTime(this.order.createdAt);
     }
-  }
-
-  private formatTime(value: string) {
-    return new Date(value).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   }
 
   async openOrderActions() {

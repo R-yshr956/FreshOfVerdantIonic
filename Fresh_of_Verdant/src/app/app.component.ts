@@ -9,6 +9,7 @@ import { AuthService } from './services/auth';
 import { ProductService } from './services/product';
 import { ReviewService } from './services/reviews';
 import { ApiService } from './services/api';
+import { OrderHistoryService } from './services/order-history';
 
 @Component({
   selector: 'app-root',
@@ -50,7 +51,7 @@ export class AppComponent {
     return words.length > 1 ? `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase() : (words[0]?.[0] ?? 'U').toUpperCase();
   }
 
-  constructor(private router: Router, public cart: CartService, private alerts: AlertController, public auth: AuthService, private products: ProductService, private reviews: ReviewService, private api: ApiService) {
+  constructor(private router: Router, public cart: CartService, private alerts: AlertController, public auth: AuthService, private products: ProductService, private reviews: ReviewService, private api: ApiService, private orderHistory: OrderHistoryService) {
     addIcons({ briefcaseOutline, callOutline, cartOutline, codeSlashOutline, documentTextOutline, gridOutline, helpCircleOutline, headsetOutline, homeOutline, cubeOutline, logOutOutline, mailOutline, personOutline, heartOutline, receiptOutline, navigateOutline, locationOutline, shieldCheckmarkOutline, informationCircleOutline, chevronForward, settingsOutline, timeOutline });
 
     // Hide the side menu on splash / login / register / reset password
@@ -64,6 +65,7 @@ export class AppComponent {
       this.api.account().subscribe({
         next: ({ user }) => {
           this.auth.signIn(user.email, user.fullName);
+          this.products.connectWishlistToAccount();
           localStorage.setItem('fv-profile-details', JSON.stringify({
             'Full Name': user.fullName,
             'Email Address': user.email,
@@ -75,6 +77,7 @@ export class AppComponent {
             this.cart.clearForSignOut();
             this.products.clearFavoritesForSignOut();
             this.reviews.clearForSignOut();
+            this.orderHistory.clearForSignOut();
             void this.router.navigateByUrl('/login', { replaceUrl: true });
           }
         },
@@ -99,6 +102,7 @@ export class AppComponent {
     this.cart.clearForSignOut();
     this.products.clearFavoritesForSignOut();
     this.reviews.clearForSignOut();
+    this.orderHistory.clearForSignOut();
     void this.router.navigateByUrl('/login', { replaceUrl: true });
   }
 

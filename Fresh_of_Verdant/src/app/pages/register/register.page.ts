@@ -6,6 +6,7 @@ import { addIcons } from 'ionicons';
 import { arrowForward, callOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
+import { ProductService } from '../../services/product';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +27,7 @@ export class RegisterPage {
   private readonly maxEmailLength = 254;
   private readonly maxPasswordLength = 64;
 
-  constructor(private router: Router, private api: ApiService, private auth: AuthService, private alertController: AlertController) {
+  constructor(private router: Router, private api: ApiService, private auth: AuthService, private products: ProductService, private alertController: AlertController) {
     addIcons({ arrowForward, callOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline });
   }
 
@@ -45,6 +46,7 @@ export class RegisterPage {
       next: () => {
         localStorage.setItem('fv-profile-details', JSON.stringify({ 'Full Name': this.form.fullName.trim(), 'Email Address': this.form.email.trim().toLowerCase(), 'Mobile Number': this.form.phone.trim() }));
         this.auth.signIn(this.form.email, this.form.fullName);
+        this.products.connectWishlistToAccount();
         this.loading = false;
         void this.showSuccessAndContinue();
       },

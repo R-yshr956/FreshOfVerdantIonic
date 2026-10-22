@@ -40,6 +40,13 @@ export interface ApiAccount {
   user: { userId: number; fullName: string; email: string; role: string };
 }
 
+export interface ComplaintSubmission {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private readonly baseUrl = environment.apiBaseUrl;
@@ -108,5 +115,25 @@ export class ApiService {
 
   removeCartItem(productId: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/cart/${productId}`, { withCredentials: true });
+  }
+
+  clearCart(): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/cart`, { withCredentials: true });
+  }
+
+  wishlist(): Observable<{ product_id: number }[]> {
+    return this.http.get<{ product_id: number }[]>(`${this.baseUrl}/wishlist`, { withCredentials: true });
+  }
+
+  saveWishlistItem(productId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/wishlist`, { product_id: productId }, { withCredentials: true });
+  }
+
+  removeWishlistItem(productId: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/wishlist/${productId}`, { withCredentials: true });
+  }
+
+  submitComplaint(details: ComplaintSubmission) {
+    return this.http.post<{ complaintId: number; status: string }>(`${this.baseUrl}/complaint`, details, { withCredentials: true });
   }
 }

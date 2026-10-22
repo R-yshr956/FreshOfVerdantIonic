@@ -6,6 +6,7 @@ import { addIcons } from 'ionicons';
 import { arrowForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline } from 'ionicons/icons';
 import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
+import { ProductService } from '../../services/product';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginPage {
   emailError = '';
   passwordError = '';
 
-  constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private auth: AuthService, private alertController: AlertController) {
+  constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private auth: AuthService, private products: ProductService, private alertController: AlertController) {
     addIcons({ arrowForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline });
   }
 
@@ -50,6 +51,7 @@ export class LoginPage {
       next: (user) => {
         const fullName = user.user?.fullName ?? user.fullName ?? user.name;
         this.auth.signIn(this.email, fullName);
+        this.products.connectWishlistToAccount();
         if (fullName) {
           localStorage.setItem('fv-profile-details', JSON.stringify({
             'Full Name': fullName,

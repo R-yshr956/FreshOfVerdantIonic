@@ -195,3 +195,16 @@ h3.bar {
         color: var(--fv-green-dark);
     }
 }
+
+.signin-prompt {
+    margin: 0 16px 24px;
+    padding: 18px;
+    border-radius: 16px;
+    background: #fff;
+    color: #000;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+
+    h3 { margin: 0 0 6px; font-size: 16px; font-weight: 800; }
+    p { margin: 0 0 14px; font-size: 12px; }
+}

@@ -1,11 +1,12 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ModalController } from '@ionic/angular';
-import { catchError, finalize, map, of, TimeoutError, timeout } from 'rxjs';
+import { catchError, concatMap, finalize, from, map, of, switchMap, TimeoutError, timeout, toArray } from 'rxjs';
 import { Product } from '../models/product';
 import { ProductDetailModal } from '../components/product-detail-modal/product-detail-modal.component';
 import { ApiProduct, ApiService } from './api';
 import { ReviewService } from './reviews';
+import { AuthService } from './auth';
 
 export interface ProductCategory {
   id: number;
@@ -39,11 +40,27 @@ export class ProductService {
   readonly favorites = signal<number[]>(JSON.parse(localStorage.getItem('fv-favorites') ?? '[]'));
 
   toggleFavorite(product: Product) {
-    const next = this.favorites().includes(product.id)
+    const wasFavorite = this.favorites().includes(product.id);
+    const next = wasFavorite
       ? this.favorites().filter((id) => id !== product.id)
       : [...this.favorites(), product.id];
     this.favorites.set(next);
     localStorage.setItem('fv-favorites', JSON.stringify(next));
+
+    if (this.auth.isAuthenticated) {
+      const request = wasFavorite
+        ? this.api.removeWishlistItem(product.id)
+        : this.api.saveWishlistItem(product.id);
+      request.pipe(catchError((error) => {
+        const current = this.favorites();
+        const restored = wasFavorite
+          ? [...current, product.id]
+          : current.filter((id) => id !== product.id);
+        this.setFavorites(restored);
+        console.error('Could not save wishlist change to the account.', error);
+        return of(undefined);
+      })).subscribe();
+    }
   }
 
   isFavorite(product: Product) { return this.favorites().includes(product.id); }
@@ -53,7 +70,27 @@ export class ProductService {
     localStorage.removeItem('fv-favorites');
   }
 
-  constructor(private modalCtrl: ModalController, private api: ApiService, private reviewService: ReviewService) {
+  connectWishlistToAccount() {
+    if (!this.auth.isAuthenticated) return;
+
+    const localIds = [...new Set(this.favorites().filter((id) => Number.isSafeInteger(id) && id > 0))];
+    from(localIds).pipe(
+      concatMap((id) => this.api.saveWishlistItem(id).pipe(catchError(() => of(undefined)))),
+      toArray(),
+      switchMap(() => this.api.wishlist()),
+    ).subscribe({
+      next: (items) => this.setFavorites(items.map((item) => Number(item.product_id)).filter((id) => Number.isSafeInteger(id) && id > 0)),
+      error: (error) => console.error('Could not load the account wishlist.', error),
+    });
+  }
+
+  private setFavorites(ids: number[]) {
+    const uniqueIds = [...new Set(ids)];
+    this.favorites.set(uniqueIds);
+    localStorage.setItem('fv-favorites', JSON.stringify(uniqueIds));
+  }
+
+  constructor(private modalCtrl: ModalController, private api: ApiService, private reviewService: ReviewService, private auth: AuthService) {
     this.load();
   }
 

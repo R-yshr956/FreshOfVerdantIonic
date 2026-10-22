@@ -136,16 +136,60 @@ h3 {
     }
 }
 
+.phone-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 8px;
+    border: 1px solid #c9c9c9;
+    border-radius: 8px;
+    background: #ededed;
+    color: #222;
+    font-size: 14px;
+    font-weight: 700;
+
+    span { flex-shrink: 0; }
+
+    input {
+        min-width: 0;
+        padding-left: 0;
+        border: 0;
+        background: transparent;
+    }
+}
+
+.address-picker {
+    padding: 0 0 14px 50px;
+
+    p { margin: 7px 0; color: #66716a; font-size: 11px; }
+    > input { box-sizing: border-box; width: 100%; padding: 9px; border: 1px solid #c9c9c9; border-radius: 8px; background: #f7f8f7; color: #222; font-size: 13px; }
+}
+
+.dummy-map {
+    position: relative;
+    height: 130px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #e6eee5;
+    cursor: crosshair;
+    touch-action: none;
+
+    svg { width: 100%; height: 100%; display: block; }
+}
+
+.map-road { position: absolute; color: #718072; font-size: 8px; font-weight: 700; letter-spacing: .4px; text-shadow: 0 1px #fff; }
+.road-one { left: 8%; top: 27%; transform: rotate(10deg); }
+.road-two { right: 8%; bottom: 24%; transform: rotate(-8deg); }
+.map-pin { position: absolute; left: 50%; top: 44%; display: grid; place-items: center; width: 30px; height: 30px; border: 3px solid #fff; border-radius: 50% 50% 50% 0; background: var(--fv-green-dark); color: white; box-shadow: 0 2px 6px #0003; transform: translate(-50%, -50%) rotate(-45deg); pointer-events: none; }
+.map-pin ion-icon { transform: rotate(45deg); font-size: 17px; }
+.map-select { margin-top: 8px; padding: 8px 12px; border: 0; border-radius: 8px; background: var(--fv-green-dark); color: #fff; font-weight: 700; }
+.locate-button { display: inline-flex; align-items: center; gap: 5px; margin: 0 0 8px; }
+.locate-button:disabled { opacity: .65; }
+
 .profile-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:0 16px; }
 .profile-stats a { display:grid; gap:3px; justify-items:center; padding:12px 4px; border-radius:10px; background:white; color:#111; text-decoration:none; box-shadow:0 2px 8px #0000000d; }
 .profile-stats b { color:var(--fv-green-dark); font-size:19px; }
 .profile-stats span { font-size:12px; }
-
-.val .plain {
-    font-size: 11px;
-    letter-spacing: 0;
-    font-weight: 400;
-}
 
 .edit {
     border: 0;
@@ -167,19 +211,7 @@ h3 {
     }
 }
 
-.security {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 4px 16px 18px;
-    color: var(--fv-green-dark);
-    font-weight: 700;
-    font-size: 14px;
-
-    .end {
-        margin-left: auto;
-    }
-}
+.account-link { width:calc(100% - 32px); border:0; font:inherit; text-align:left; cursor:pointer; }
 
 .save {
     width: calc(100% - 32px);

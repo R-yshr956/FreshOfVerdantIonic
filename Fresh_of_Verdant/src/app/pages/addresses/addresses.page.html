@@ -7,8 +7,17 @@
 
   @if (showForm) {
     <div class="form-card"><h2>{{ editingId ? 'Edit address' : 'Add address' }}</h2><div class="fields">
-      <label>Address label<input [(ngModel)]="draft.label" placeholder="Home, Work…" /></label><label>Full name<input [(ngModel)]="draft.name" autocomplete="name" /></label><label>Phone number<input type="tel" [(ngModel)]="draft.phone" autocomplete="tel" /></label><label class="wide">Street<input [(ngModel)]="draft.street" autocomplete="street-address" /></label>
+      <label>Address type<select [(ngModel)]="draft.label"><option>Home</option><option>Work</option><option>Other</option></select></label><label>Full name<input [(ngModel)]="draft.name" autocomplete="name" /></label><label>Phone number<input type="tel" [(ngModel)]="draft.phone" autocomplete="tel" /></label><label class="wide">Street<input [(ngModel)]="draft.street" autocomplete="street-address" /></label>
       <label>Barangay<select [(ngModel)]="draft.barangay"><option value="">Select barangay</option>@for(b of barangays; track b){<option [value]="b">{{ b }}</option>}</select></label><label>City<select [(ngModel)]="draft.city"><option value="">Select city</option>@for(c of cities; track c){<option [value]="c">{{ c }}</option>}</select></label><label>ZIP code<input inputmode="numeric" [(ngModel)]="draft.zip" /></label>
-    </div><div class="form-actions"><button class="cancel" (click)="cancel()">Cancel</button><button class="save" (click)="save()">Save address</button></div></div>
+    </div>
+    <section class="location-picker" aria-label="Choose delivery location">
+      <div class="location-heading"><strong>Pin location</strong><button type="button" class="locate" [disabled]="isLocating" (click)="locateMe()"><ion-icon name="locate-outline"></ion-icon>{{ isLocating ? 'Finding…' : 'Use my location' }}</button></div>
+      <div class="address-map" role="application" aria-label="Sample map. Drag or tap to move the pin." (pointerdown)="startPinDrag($event)" (pointermove)="movePin($event)" (pointerup)="endPinDrag()" (pointercancel)="endPinDrag()">
+        <svg viewBox="0 0 600 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="600" height="250" fill="#e6eee5"/><path d="M-20 52 170 86 310 32 620 82M-20 206 168 164 330 218 620 166M95-20 150 270M360-20 320 270M510-20 450 270" fill="none" stroke="#fff" stroke-width="24"/><path d="M-20 52 170 86 310 32 620 82M-20 206 168 164 330 218 620 166M95-20 150 270M360-20 320 270M510-20 450 270" fill="none" stroke="#d3dfd3" stroke-width="2"/><path d="m218 0 38 75-40 49 56 58-12 68M0 128l140-15 98 40 122-24 240 30" fill="none" stroke="#d4e6cf" stroke-width="17"/></svg>
+        <span class="road-label road-sampaguita">SAMPAGUITA ST.</span><span class="road-label road-quezon">QUEZON AVE.</span><span class="pin" [style.left.%]="mapPinX" [style.top.%]="mapPinY"><ion-icon name="location-outline"></ion-icon></span>
+      </div>
+      <p>Drag or tap the sample map to adjust the pin. Confirm the street, barangay, and city below.</p>
+    </section>
+    <div class="form-actions"><button class="cancel" (click)="cancel()">Cancel</button><button class="save" (click)="save()">Save address</button></div></div>
   }
 </ion-content>

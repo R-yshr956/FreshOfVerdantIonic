@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AlertController, IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { callOutline, cardOutline, checkmark, chevronForward, heartOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline } from 'ionicons/icons';
+import { callOutline, cardOutline, checkmark, chevronForward, heartOutline, locateOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ProductService } from '../../services/product';
 import { ReviewService } from '../../services/reviews';
+import { OrderHistoryService } from '../../services/order-history';
 
 @Component({
   selector: 'app-profile',
@@ -16,8 +17,12 @@ import { ReviewService } from '../../services/reviews';
   imports: [IonContent, IonIcon, FormsModule, RouterLink, PageHeaderComponent],
 })
 export class ProfilePage {
-  constructor(public products: ProductService, public reviewService: ReviewService, private alerts: AlertController) {
-    addIcons({ callOutline, cardOutline, checkmark, chevronForward, heartOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline });
+  mapPinX = 50;
+  mapPinY = 44;
+  isDraggingMapPin = false;
+  isLocating = false;
+  constructor(public products: ProductService, public reviewService: ReviewService, public orderHistory: OrderHistoryService, private alerts: AlertController, private router: Router) {
+    addIcons({ callOutline, cardOutline, checkmark, chevronForward, heartOutline, locateOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline });
     this.loadSavedProfile();
   }
 
@@ -36,9 +41,95 @@ export class ProfilePage {
   }
 
   async save() {
+    const phone = this.fields.find((field) => field.label === 'Mobile Number');
+    if (phone) phone.value = this.formatPhone(phone.value);
     this.fields.forEach((f) => (f.editing = false));
     localStorage.setItem('fv-profile-details', JSON.stringify(Object.fromEntries(this.fields.map((field) => [field.label, field.value]))));
     const alert = await this.alerts.create({ message: 'Changes are Saved', buttons: ['OK'] });
+    await alert.present();
+  }
+
+  phoneDigits(value: string) {
+    let digits = value.replace(/\D/g, '');
+    if (digits.startsWith('63')) digits = digits.slice(2);
+    if (digits.startsWith('0')) digits = digits.slice(1);
+    return digits.slice(0, 10);
+  }
+
+  updatePhone(value: string) {
+    const phone = this.fields.find((field) => field.label === 'Mobile Number');
+    if (phone) phone.value = `+63 ${this.phoneDigits(value)}`;
+  }
+
+  formatPhone(value: string) {
+    const digits = this.phoneDigits(value);
+    const formatted = digits.length > 7
+      ? `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`
+      : digits.length > 3 ? `${digits.slice(0, 3)} ${digits.slice(3)}` : digits;
+    return `+63${formatted ? ` ${formatted}` : ''}`;
+  }
+
+  selectAddress(field: (typeof this.fields)[number]) {
+    field.editing = false;
+  }
+
+  openAddresses() {
+    void this.router.navigateByUrl('/addresses');
+  }
+
+  startMapPinDrag(event: PointerEvent) {
+    event.preventDefault();
+    this.isDraggingMapPin = true;
+    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+    this.moveMapPin(event);
+  }
+
+  moveMapPin(event: PointerEvent) {
+    if (!this.isDraggingMapPin) return;
+    const map = event.currentTarget as HTMLElement;
+    const rect = map.getBoundingClientRect();
+    this.mapPinX = Math.max(5, Math.min(95, ((event.clientX - rect.left) / rect.width) * 100));
+    this.mapPinY = Math.max(12, Math.min(88, ((event.clientY - rect.top) / rect.height) * 100));
+
+    const address = this.fields.find((field) => field.label === 'Location Address');
+    if (address) address.value = this.mapAddress(this.mapPinX, this.mapPinY);
+  }
+
+  endMapPinDrag() {
+    this.isDraggingMapPin = false;
+  }
+
+  async locateMe() {
+    if (!navigator.geolocation) {
+      await this.showLocationMessage('Location is not available in this browser. You can still drag the pin or enter an address.');
+      return;
+    }
+
+    this.isLocating = true;
+    navigator.geolocation.getCurrentPosition(async ({ coords }) => {
+      this.isLocating = false;
+      this.mapPinX = 50;
+      this.mapPinY = 44;
+      const address = this.fields.find((field) => field.label === 'Location Address');
+      if (address) address.value = `Current location (${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)})`;
+      await this.showLocationMessage('Your device location was detected. The sample map is illustrative, so enter a street address below if you need a readable delivery address.');
+    }, async (error) => {
+      this.isLocating = false;
+      const message = error.code === error.PERMISSION_DENIED
+        ? 'Location permission was denied. Allow location access in your browser settings, or drag the pin and enter the address manually.'
+        : 'Could not detect your location. Drag the pin or enter the address manually.';
+      await this.showLocationMessage(message);
+    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 });
+  }
+
+  private mapAddress(x: number, y: number) {
+    const street = x < 46 || y > 58 ? 'Sampaguita St.' : 'Quezon Ave.';
+    const number = Math.max(1, Math.round((y * 11 + x * 7) % 90));
+    return `${number} ${street}, Quezon City`;
+  }
+
+  private async showLocationMessage(message: string) {
+    const alert = await this.alerts.create({ message, buttons: ['OK'] });
     await alert.present();
   }
 
