@@ -91,7 +91,11 @@ export class AppComponent {
   }
 
   async logout() {
-    const alert = await this.alerts.create({ header: 'Logout?', message: 'Are you sure about to Log out?', buttons: [{ text: 'NO', role: 'cancel' }, { text: 'YES', role: 'confirm' }] });
+    const alert = await this.alerts.create({
+      header: 'Log out?',
+      message: 'Are you sure you want to log out?',
+      buttons: [{ text: 'Log out', role: 'confirm' }, { text: 'Cancel', role: 'cancel' }],
+    });
     await alert.present();
     const { role } = await alert.onDidDismiss();
     if (role === 'confirm') {

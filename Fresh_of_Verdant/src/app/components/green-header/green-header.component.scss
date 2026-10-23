@@ -11,15 +11,21 @@
 
 .brand-toolbar { --background:#fff; --color:#173b27; --min-height:64px; box-shadow:0 2px 8px #0000000a; }
 .brand-title { display:flex; align-items:center; gap:9px; color:#173b27; strong { font-size:17px; font-weight:800; } img { width:40px; height:40px; padding:2px; border-radius:11px; background:#fff; object-fit:contain; } }
-.brand-toolbar .menu-btn { --color:#fff; --background:var(--fv-green-dark); }
+.brand-toolbar .menu-btn { color:#fff; background:var(--fv-green-dark); }
 .brand-toolbar .cart-btn { background:var(--fv-green-dark); color:#fff; }
 
 .menu-btn {
-  --color: #fff;
-  --background: rgba(255, 255, 255, 0.18);
-  --border-radius: 50%;
+  display: grid;
+  place-items: center;
   width: 44px;
   height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .titles {

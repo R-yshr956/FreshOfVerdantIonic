@@ -1,12 +1,40 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AlertController, IonContent, IonIcon } from '@ionic/angular';
+import { AlertController, IonContent, IonIcon, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { arrowForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline } from 'ionicons/icons';
+import { arrowForward, closeOutline, eyeOffOutline, eyeOutline, leafOutline, lockClosedOutline, mailOutline, nutritionOutline } from 'ionicons/icons';
 import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
 import { ProductService } from '../../services/product';
+
+@Component({
+  selector: 'app-login-welcome-modal',
+  standalone: true,
+  imports: [IonIcon],
+  template: `
+    <section class="welcome-card" aria-labelledby="welcome-title">
+      <button class="close-button" type="button" aria-label="Close welcome" (click)="dismiss()"><ion-icon name="close-outline"></ion-icon></button>
+      <div class="welcome-brand">
+        <img src="https://cdn.phototourl.com/member/2026-10-22-e0d176fe-0763-46fd-be92-ddac142cb10f.png" alt="Fresh of Verdant logo" />
+        <span>Fresh of<strong>Verdant</strong></span>
+      </div>
+      <div class="welcome-mark"><ion-icon name="leaf-outline"></ion-icon></div>
+      <p class="eyebrow">YOUR FRESH MARKET</p>
+      <h1 id="welcome-title">Welcome Back to Fresh of Verdant!</h1>
+      <p class="welcome-copy">We’re glad you’re here. Your fresh picks, local harvests, and easy ordering are ready when you are.</p>
+      <div class="welcome-actions"><button class="ok-button" type="button" (click)="dismiss()">OK</button></div>
+    </section>
+  `,
+  styleUrls: ['../../components/login-welcome-modal/login-welcome-modal.component.scss'],
+})
+class LoginWelcomeModalComponent {
+  constructor(private modalController: ModalController) {
+    addIcons({ closeOutline, leafOutline });
+  }
+
+  dismiss() { void this.modalController.dismiss(undefined, 'ok'); }
+}
 
 @Component({
   selector: 'app-login',
@@ -25,7 +53,7 @@ export class LoginPage {
   emailError = '';
   passwordError = '';
 
-  constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private auth: AuthService, private products: ProductService, private alertController: AlertController) {
+  constructor(private router: Router, private route: ActivatedRoute, private api: ApiService, private auth: AuthService, private products: ProductService, private alertController: AlertController, private modalController: ModalController) {
     addIcons({ arrowForward, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline });
   }
 
@@ -59,7 +87,7 @@ export class LoginPage {
           }));
         }
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/home';
-        void this.router.navigateByUrl(returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/home', { replaceUrl: true });
+        void this.showWelcomeAndContinue(returnUrl);
       },
       error: (err) => {
         this.error = err.error?.error ?? 'Unable to sign in. Check your connection and details.';
@@ -83,5 +111,17 @@ export class LoginPage {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+  private async showWelcomeAndContinue(returnUrl: string) {
+    const modal = await this.modalController.create({
+      component: LoginWelcomeModalComponent,
+      cssClass: 'fv-login-welcome-modal',
+      backdropDismiss: false,
+    });
+    await modal.present();
+    await modal.onDidDismiss();
+    const destination = returnUrl.startsWith('/') && !returnUrl.startsWith('//') ? returnUrl : '/home';
+    await this.router.navigateByUrl(destination, { replaceUrl: true });
   }
 }

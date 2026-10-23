@@ -1,0 +1,119 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.welcome-card {
+  position: relative;
+  overflow: hidden;
+  padding: 28px 24px 20px;
+  border: 1px solid #ffffff;
+  border-radius: 24px;
+  background: linear-gradient(155deg, #f5fff8 0%, #e4f8eb 58%, #d1f1dc 100%);
+  color: #173f2a;
+  box-shadow: 0 18px 48px #00381938;
+}
+
+.welcome-card::before {
+  position: absolute;
+  top: -84px;
+  right: -50px;
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  background: #00b84f12;
+  content: '';
+}
+
+.close-button {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffffd9;
+  color: #24623c;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.welcome-brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+  color: #008f3e;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.welcome-brand img {
+  width: 48px;
+  height: 48px;
+  padding: 5px;
+  border-radius: 15px;
+  background: #fff;
+  object-fit: contain;
+}
+
+.welcome-brand strong { display: block; font-size: 18px; font-weight: 800; }
+
+.welcome-mark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 15px;
+  place-items: center;
+  border: 1px solid #b5e9c8;
+  border-radius: 16px;
+  background: #fff;
+  color: #00a846;
+  font-size: 25px;
+}
+
+.eyebrow {
+  margin: 0 0 7px;
+  color: #008f3e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+}
+
+h1 {
+  max-width: 290px;
+  margin: 0;
+  color: #163b27;
+  font-size: 23px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.welcome-copy {
+  margin: 11px 0 20px;
+  color: #52705d;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.welcome-actions { display: flex; justify-content: flex-end; }
+
+.ok-button {
+  min-width: 92px;
+  height: 42px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #00c455, #009b43);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 7px 16px #00a84635;
+  cursor: pointer;
+}

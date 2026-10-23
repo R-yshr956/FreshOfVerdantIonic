@@ -14,6 +14,15 @@
 
 ion-footer { --background: var(--fv-green-dark); --color: #fff; }
 
+ion-modal.fv-login-welcome-modal {
+  --width: min(88vw, 380px);
+  --height: auto;
+  --border-radius: 24px;
+  --background: transparent;
+  --box-shadow: none;
+}
+ion-modal.fv-login-welcome-modal::part(content) { overflow: visible; border-radius: 24px; background: transparent; box-shadow: none; }
+
 /* Basic CSS for apps built with Ionic */
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";

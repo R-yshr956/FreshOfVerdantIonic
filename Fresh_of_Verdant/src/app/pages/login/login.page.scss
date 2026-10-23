@@ -76,14 +76,31 @@ p {
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  margin: -6px -6px;
-  padding: 6px;
-  border: 0;
-  background: transparent;
-  color: var(--fv-green-dark);
+  justify-content: center;
+  min-height: 30px;
+  margin: 0 0 0 3px;
+  padding: 0 11px;
+  border: 1px solid #a8dfba;
+  border-radius: 9px;
+  background: #e7f8ed;
+  color: #087b3c;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
   pointer-events: auto;
+}
+
+.bottom .browse-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  margin-left: 3px;
+  padding: 0 11px;
+  border: 1px solid #008f3e;
+  border-radius: 9px;
+  background: #008f3e;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
 }

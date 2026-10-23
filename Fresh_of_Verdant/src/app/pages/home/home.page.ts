@@ -37,7 +37,7 @@ export class HomePage {
   formatAppReviewDate(date: string) { return new Date(date).toLocaleDateString(); }
 
   get greeting() {
-    return this.auth.isAuthenticated ? `Welcome, ${this.auth.currentName() || 'there'}` : 'Welcome to the';
+    return this.auth.isAuthenticated ? `Welcome, ${this.auth.currentName() || 'there'}` : 'Welcome, Guest!';
   }
 
   open(product: Product) {
