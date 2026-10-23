@@ -1,7 +1,7 @@
 <ion-content>
   <div class="receipt">
     <header>
-      <div class="mark"><ion-icon name="receipt-outline"></ion-icon></div>
+      <div class="mark"><img src="https://cdn.phototourl.com/member/2026-10-22-e0d176fe-0763-46fd-be92-ddac142cb10f.png" alt="Fresh of Verdant official logo" /></div>
       <button class="close" type="button" aria-label="Close receipt" (click)="close()"><ion-icon name="close-outline"></ion-icon></button>
       <small>FARMBOX MARKET · ORDER RECEIPT</small>
       <h2>Order receipt</h2>
@@ -33,9 +33,11 @@
     </section>
     <p class="note">{{ order.payment === 'Cash on Delivery' ? 'Payment is due when your order arrives.' : 'Cashless payment is selected for this demo order.' }}</p>
 
-    <button class="refund" type="button" [disabled]="order.refundRequested" (click)="requestRefund()">
-      {{ order.refundRequested ? 'Refund requested' : 'Request a refund' }}
-    </button>
+    @if (allowRefund) {
+      <button class="refund" type="button" [disabled]="order.refundRequested" (click)="requestRefund()">
+        {{ order.refundRequested ? 'Refund requested' : 'Request a refund' }}
+      </button>
+    }
     <button class="done" type="button" (click)="close()">Done</button>
   </div>
 </ion-content>

@@ -43,7 +43,10 @@
       <div class="list-heading"><h2>Pending deliveries</h2><p>Track each order as it moves from the farm to your doorstep.</p></div>
       @for (pending of pendingOrders; track pending.id) {
         <article class="card pending-card">
-          <div class="pending-head"><div><strong>Order #{{ pending.id }}</strong><small>{{ formatOrderDate(pending.createdAt) }}</small></div><span class="pill">{{ history.statusFor(pending) }}</span></div>
+          <div class="pending-head">
+            <div><strong>Order #{{ pending.id }}</strong><small>{{ formatOrderDate(pending.createdAt) }}</small></div>
+            <div class="pending-head-right"><time class="live-clock">{{ liveClock }}</time><span class="pill">{{ history.statusFor(pending) }}</span></div>
+          </div>
           <div class="pending-items">
             @for (item of pending.items.slice(0, 2); track item.id) { <span>{{ item.qty > 1 ? item.qty + '× ' : '' }}{{ item.name }}</span> }
             @if (pending.items.length > 2) { <span>+{{ pending.items.length - 2 }} more</span> }

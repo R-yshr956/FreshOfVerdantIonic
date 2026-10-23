@@ -13,6 +13,7 @@ import { TrackedOrder } from '../../services/order-history';
 })
 export class OrderReceiptModalComponent {
   @Input({ required: true }) order!: TrackedOrder;
+  @Input() allowRefund = true;
 
   constructor(private modalCtrl: ModalController) {
     addIcons({ closeOutline, receiptOutline });

@@ -154,10 +154,25 @@ export class CheckoutPage {
   }
 
   get totalChange(): number | null {
-    if (this.payment === 'cashless') return 0;
     if (!this.cashTendered) return null;
     const tendered = Number(this.cashTendered);
-    return Number.isFinite(tendered) ? Math.max(0, tendered - this.total) : null;
+    return Number.isFinite(tendered) && tendered >= this.total ? tendered - this.total : null;
+  }
+
+  get cashTenderError(): string | null {
+    if (!this.cashTendered) return null;
+    const tendered = Number(this.cashTendered);
+    if (!Number.isFinite(tendered) || tendered <= 0) return 'Enter a cash amount greater than zero.';
+    if (tendered < this.total) return `Cash tendered must cover the total due of ₱${this.total.toFixed(2)}.`;
+    return null;
+  }
+
+  get cashlessShortfall(): number {
+    return Math.max(0, this.total - this.wallet.balance());
+  }
+
+  get paymentValid(): boolean {
+    return this.payment === 'cashless' ? this.wallet.canPay(this.total) : !this.cashTenderError;
   }
 
   choosePayment(method: string) {
@@ -171,8 +186,8 @@ export class CheckoutPage {
   placeOrder() {
     if (this.placingOrder || this.cart.items().length === 0) return;
 
-    if (this.payment === 'cashless' && !this.wallet.canPay(this.total)) {
-      void this.showWalletInsufficient();
+    if (!this.paymentValid) {
+      if (this.payment === 'cashless') void this.showWalletInsufficient();
       return;
     }
 
@@ -215,6 +230,10 @@ export class CheckoutPage {
       ],
     });
     await alert.present();
+  }
+
+  openWallet() {
+    void this.router.navigate(['/cashless-wallet'], { queryParams: { returnTo: '/checkout', amount: this.total } });
   }
 
   private async showCheckoutError() {

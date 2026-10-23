@@ -37,6 +37,7 @@ export class OrderTrackerPage {
   }
 
   get currentStatus() { return this.order ? this.history.statusFor(this.order) : 'Confirmed'; }
+  get liveClock() { return new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
 
   goToMainMenu() {
     void this.router.navigateByUrl('/home');
@@ -102,10 +103,19 @@ export class OrderTrackerPage {
   }
 
   async openReceipt() {
-    if (!this.order) return;
+    const receiptOrder: TrackedOrder = this.order ?? {
+      id: this.orderId,
+      createdAt: new Date().toISOString(),
+      status: 'Confirmed',
+      items: this.orderItems,
+      total: this.orderTotal,
+      address: this.shippingAddress,
+      payment: this.paymentMethod,
+      deliveryWindow: this.deliveryWindow,
+    };
     const modal = await this.modalCtrl.create({
       component: OrderReceiptModalComponent,
-      componentProps: { order: this.order },
+      componentProps: { order: receiptOrder, allowRefund: !!this.order },
       breakpoints: [0, 0.9, 1],
       initialBreakpoint: 0.9,
     });

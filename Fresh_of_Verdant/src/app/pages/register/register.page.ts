@@ -1,12 +1,37 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AlertController, IonContent, IonIcon } from '@ionic/angular';
+import { AlertController, IonContent, IonIcon, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { arrowForward, callOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
+import { arrowForward, callOutline, closeOutline, eyeOffOutline, eyeOutline, leafOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { ApiService } from '../../services/api';
 import { AuthService } from '../../services/auth';
 import { ProductService } from '../../services/product';
+
+@Component({
+  selector: 'app-register-welcome-modal',
+  standalone: true,
+  imports: [IonIcon],
+  template: `
+    <section class="welcome-card" aria-labelledby="welcome-title">
+      <button class="close-button" type="button" aria-label="Close welcome" (click)="dismiss()"><ion-icon name="close-outline"></ion-icon></button>
+      <div class="welcome-brand">
+        <img src="https://cdn.phototourl.com/member/2026-10-22-e0d176fe-0763-46fd-be92-ddac142cb10f.png" alt="Fresh of Verdant logo" />
+        <span>Fresh of<strong>Verdant</strong></span>
+      </div>
+      <div class="welcome-mark"><ion-icon name="leaf-outline"></ion-icon></div>
+      <p class="eyebrow">YOUR FRESH MARKET</p>
+      <h1 id="welcome-title">Welcome to Fresh of Verdant!</h1>
+      <p class="welcome-copy">Your account is ready. Discover fresh local picks, save your favorites, and enjoy easy ordering.</p>
+      <div class="welcome-actions"><button class="ok-button" type="button" (click)="dismiss()">OK</button></div>
+    </section>
+  `,
+  styleUrls: ['../../components/login-welcome-modal/login-welcome-modal.component.scss'],
+})
+class RegisterWelcomeModalComponent {
+  constructor(private modalController: ModalController) { addIcons({ closeOutline, leafOutline }); }
+  dismiss() { void this.modalController.dismiss(undefined, 'ok'); }
+}
 
 @Component({
   selector: 'app-register',
@@ -27,8 +52,8 @@ export class RegisterPage {
   private readonly maxEmailLength = 254;
   private readonly maxPasswordLength = 64;
 
-  constructor(private router: Router, private api: ApiService, private auth: AuthService, private products: ProductService, private alertController: AlertController) {
-    addIcons({ arrowForward, callOutline, eyeOffOutline, eyeOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline });
+  constructor(private router: Router, private api: ApiService, private auth: AuthService, private products: ProductService, private alertController: AlertController, private modalController: ModalController) {
+    addIcons({ arrowForward, callOutline, closeOutline, eyeOffOutline, eyeOutline, leafOutline, lockClosedOutline, mailOutline, nutritionOutline, personOutline, shieldCheckmarkOutline });
   }
 
   register() {
@@ -103,13 +128,13 @@ export class RegisterPage {
   }
 
   private async showSuccessAndContinue() {
-    const alert = await this.alertController.create({
-      header: 'Account created',
-      message: 'Your account has been registered successfully.',
-      buttons: ['Continue'],
+    const modal = await this.modalController.create({
+      component: RegisterWelcomeModalComponent,
+      cssClass: 'fv-login-welcome-modal',
+      backdropDismiss: false,
     });
-    await alert.present();
-    await alert.onDidDismiss();
+    await modal.present();
+    await modal.onDidDismiss();
     await this.router.navigateByUrl('/home', { replaceUrl: true });
   }
 }

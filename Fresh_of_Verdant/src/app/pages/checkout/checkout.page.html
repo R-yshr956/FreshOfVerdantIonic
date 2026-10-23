@@ -91,12 +91,19 @@
     @if (payment === 'cod') {
       <label class="cash-entry">
         <span>Cash tendered <small>Optional, to calculate your change</small></span>
-        <span class="peso-input"><b>₱</b><input name="cashTendered" type="number" inputmode="decimal" min="0" step="1" [(ngModel)]="cashTendered" placeholder="Enter cash amount" /></span>
+        <span class="peso-input"><b>₱</b><input name="cashTendered" type="number" inputmode="decimal" min="0.01" step="0.01" [(ngModel)]="cashTendered" placeholder="Enter cash amount" [attr.aria-invalid]="cashTenderError ? 'true' : null" /></span>
       </label>
-      <div class="payment-line"><span>Total Change</span><strong>{{ totalChange === null ? '—' : '₱' + totalChange }}</strong></div>
+      @if (cashTenderError) { <p class="payment-validation error">{{ cashTenderError }}</p> }
+      <div class="payment-line"><span>Total Change</span><strong>{{ totalChange === null ? '—' : '₱' + totalChange.toFixed(2) }}</strong></div>
     } @else {
-      <div class="payment-line"><span>Total Change</span><strong>₱0</strong></div>
-      <p class="payment-note">Cashless is a demo option. Payment stays due until a payment provider confirms it.</p>
+      <div class="payment-line"><span>Wallet balance</span><strong>₱{{ wallet.balance().toFixed(2) }}</strong></div>
+      @if (cashlessShortfall > 0) {
+        <p class="payment-validation error">Add ₱{{ cashlessShortfall.toFixed(2) }} to your wallet to cover this order.</p>
+        <button class="wallet-fund-button" type="button" (click)="openWallet()">Add funds to wallet</button>
+      } @else {
+        <p class="payment-validation success">Wallet balance covers the total due.</p>
+      }
+      <div class="payment-line"><span>Total Change</span><strong>₱0.00</strong></div>
     }
   </section>
 
@@ -111,7 +118,7 @@
 
 <ion-footer class="ion-no-border">
   <div class="foot">
-    <button class="fv-btn" [disabled]="placingOrder || cart.items().length === 0" (click)="placeOrder()">{{ placingOrder ? 'Placing Order…' : 'Place Order · ₱' + total }} <ion-icon name="checkmark"></ion-icon></button>
+    <button class="fv-btn" [disabled]="placingOrder || cart.items().length === 0 || !paymentValid" (click)="placeOrder()">{{ placingOrder ? 'Placing Order…' : 'Place Order · ₱' + total }} <ion-icon name="checkmark"></ion-icon></button>
     <small><ion-icon name="shield-checkmark-outline"></ion-icon> Your information is encrypted and securely handled.</small>
   </div>
 </ion-footer>
