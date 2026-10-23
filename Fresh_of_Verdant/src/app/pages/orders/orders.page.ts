@@ -22,11 +22,13 @@ export class OrdersPage {
     addIcons({ imageOutline });
   }
 
-  get orders(): Array<{ id: string; date: string; status: string; items: string; total: number; previews?: CartItem[] }> {
+  get orders(): Array<{ id: string; date: string; status: string; delivered: boolean; refundRequested: boolean; items: string; total: number; previews?: CartItem[] }> {
     return this.history.all().map((order) => ({
       id: order.id,
       date: new Date(order.createdAt).toLocaleString([], { dateStyle: 'long', timeStyle: 'short' }),
-      status: order.status === 'Out for Delivery' ? 'In Transit' : order.status,
+      status: order.refundRequested ? 'Refund Requested' : order.status === 'Delivered' ? 'Delivered' : 'Pending',
+      delivered: order.status === 'Delivered',
+      refundRequested: !!order.refundRequested,
       items: `${order.items.reduce((count, item) => count + item.qty, 0)} fresh items`,
       total: order.total,
       previews: order.items,
@@ -35,7 +37,7 @@ export class OrdersPage {
 
   // Active = anything not delivered yet
   get shown() {
-    return this.orders.filter((o) => (this.tab === 'active') === (o.status !== 'Delivered'));
+    return this.orders.filter((o) => (this.tab === 'active') === !o.delivered);
   }
 
   previewsFor(order: (typeof this.orders)[number]): CartItem[] {

@@ -4,6 +4,7 @@ import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { eyeOffOutline, eyeOutline, lockClosedOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
+import { ApiService } from '../../services/api';
 
 @Component({
   selector: 'app-security',
@@ -19,8 +20,9 @@ export class SecurityPage {
   showPasswords = false;
   message = '';
   error = '';
+  saving = false;
 
-  constructor() {
+  constructor(private api: ApiService) {
     addIcons({ eyeOffOutline, eyeOutline, lockClosedOutline, shieldCheckmarkOutline });
   }
 
@@ -35,12 +37,35 @@ export class SecurityPage {
       this.error = 'Your new password must be at least 8 characters.';
       return;
     }
+    if (this.newPassword.length > 64) {
+      this.error = 'Your new password must be 64 characters or fewer.';
+      return;
+    }
     if (this.newPassword !== this.confirmPassword) {
       this.error = 'The new passwords do not match.';
       return;
     }
 
-    this.message = 'Password updates are not connected to the account service yet. Your password has not been changed.';
+    if (this.currentPassword === this.newPassword) {
+      this.error = 'Choose a new password that differs from your current password.';
+      return;
+    }
+
+    this.saving = true;
+    this.api.changePassword(this.currentPassword, this.newPassword).subscribe({
+      next: (result) => {
+        this.message = result.message || 'Your password has been changed.';
+        this.clearPasswords();
+        this.saving = false;
+      },
+      error: (response) => {
+        this.error = response?.error?.error || 'Unable to update your password. Check your current password and try again.';
+        this.saving = false;
+      },
+    });
+  }
+
+  private clearPasswords() {
     this.currentPassword = '';
     this.newPassword = '';
     this.confirmPassword = '';

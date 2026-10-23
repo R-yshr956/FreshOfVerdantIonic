@@ -51,6 +51,11 @@ export class AppComponent {
     return words.length > 1 ? `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase() : (words[0]?.[0] ?? 'U').toUpperCase();
   }
 
+  get profilePhoto() {
+    const account = this.auth.currentUser()?.trim().toLowerCase() || 'guest';
+    return localStorage.getItem(`fv-profile-photo:${account}`);
+  }
+
   constructor(private router: Router, public cart: CartService, private alerts: AlertController, public auth: AuthService, private products: ProductService, private reviews: ReviewService, private api: ApiService, private orderHistory: OrderHistoryService) {
     addIcons({ briefcaseOutline, callOutline, cartOutline, codeSlashOutline, documentTextOutline, gridOutline, helpCircleOutline, headsetOutline, homeOutline, cubeOutline, logOutOutline, mailOutline, personOutline, heartOutline, receiptOutline, navigateOutline, locationOutline, shieldCheckmarkOutline, informationCircleOutline, chevronForward, settingsOutline, timeOutline });
 

@@ -51,7 +51,7 @@
           }
           <div class="foot">
             <span class="price">₱{{ p.price }}/{{ p.unit }}</span>
-            <button class="add" (click)="quickAdd(p, $event)"><ion-icon name="add"></ion-icon> Add</button>
+            <button class="add" [class.in-cart]="isInCart(p.id)" [disabled]="p.stockQuantity === 0" [attr.aria-label]="p.stockQuantity === 0 ? 'Out of stock' : isInCart(p.id) ? 'Added to cart. Add another' : 'Add to cart'" [title]="p.stockQuantity === 0 ? 'Out of stock' : isInCart(p.id) ? 'Added to cart' : 'Add to cart'" (click)="quickAdd(p, $event)"><ion-icon [name]="isInCart(p.id) ? 'checkmark' : 'cart-outline'"></ion-icon></button>
           </div>
         </div>
       }

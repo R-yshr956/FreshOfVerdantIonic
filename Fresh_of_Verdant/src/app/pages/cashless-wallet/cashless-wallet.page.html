@@ -1,0 +1,40 @@
+<app-green-header subtitle="ACCOUNT WALLET" title="Cashless Wallet"></app-green-header>
+<ion-content>
+  <section class="balance-card">
+    <div class="wallet-mark"><ion-icon name="wallet-outline"></ion-icon></div>
+    <small>DEMO WALLET BALANCE</small>
+    <strong class="balance">{{ formatAmount(wallet.balance()) }}</strong>
+    <p>Use your virtual balance to pay for Fresh of Verdant orders.</p>
+    <div class="top-ups">
+      <button type="button" (click)="addDemoFunds(500)"><ion-icon name="add"></ion-icon> Add ₱500 demo funds</button>
+      <button type="button" (click)="addDemoFunds(1000)"><ion-icon name="add"></ion-icon> Add ₱1,000 demo funds</button>
+    </div>
+  </section>
+
+  @if (returnTo === '/checkout') {
+    <section class="checkout-card">
+      <span>Checkout payment</span>
+      <strong>{{ formatAmount(checkoutAmount) }}</strong>
+      @if (wallet.balance() >= checkoutAmount) {
+        <p><ion-icon name="checkmark-circle-outline"></ion-icon> Wallet balance is enough for this order.</p>
+        <button class="primary" type="button" (click)="useWallet()">Use Cashless Wallet</button>
+      } @else {
+        <p class="short">Add demo funds to cover this order, then continue checkout.</p>
+      }
+    </section>
+  } @else {
+    <button class="primary use-default" type="button" (click)="useWallet()">Set as checkout payment</button>
+  }
+
+  <div class="section-title"><h2>Recent activity</h2><span>Virtual wallet</span></div>
+  @for (entry of wallet.transactions(); track entry.createdAt + entry.label) {
+    <article class="transaction">
+      <span class="transaction-icon"><ion-icon [name]="entry.amount < 0 ? 'card-outline' : 'time-outline'"></ion-icon></span>
+      <span class="transaction-copy"><strong>{{ entry.label }}</strong><small>{{ entry.createdAt | date:'medium' }}</small></span>
+      <b [class.debit]="entry.amount < 0">{{ entry.amount < 0 ? '−' : '+' }}{{ formatAmount(entry.amount) }}</b>
+    </article>
+  } @empty {
+    <p class="empty">Your wallet activity will appear here.</p>
+  }
+  <p class="demo-note">This is a local demo wallet. Adding funds and payments do not move real money.</p>
+</ion-content>

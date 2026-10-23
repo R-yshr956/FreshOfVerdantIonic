@@ -77,6 +77,13 @@ ion-content {
             background: var(--fv-green);
         }
     }
+
+    &.refund {
+        background: #fff4e5;
+        color: #8a4b00;
+
+        i { background: #d88400; }
+    }
 }
 
 .mid {

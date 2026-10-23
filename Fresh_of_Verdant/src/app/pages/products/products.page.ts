@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { add, checkmarkCircleOutline, imageOutline, leafOutline, searchOutline, star } from 'ionicons/icons';
+import { cartOutline, checkmark, checkmarkCircleOutline, imageOutline, leafOutline, searchOutline, star } from 'ionicons/icons';
 import { GreenHeaderComponent } from '../../components/green-header/green-header.component';
 import { ProductService } from '../../services/product';
 import { CartService } from '../../services/cart';
@@ -27,7 +27,7 @@ export class ProductsPage {
   readonly pageSize = 15;
 
   constructor(public productService: ProductService, private cart: CartService, private reviewService: ReviewService, route: ActivatedRoute) {
-    addIcons({ add, checkmarkCircleOutline, imageOutline, leafOutline, searchOutline, star });
+    addIcons({ cartOutline, checkmark, checkmarkCircleOutline, imageOutline, leafOutline, searchOutline, star });
     route.queryParamMap.subscribe((params) => {
       this.featuredOnly = params.get('featured') === 'true';
       this.popularOnly = params.get('popular') === 'true';
@@ -52,6 +52,7 @@ export class ProductsPage {
   }
 
   reviewCountFor(productId: number) { return this.reviewService.forProduct(productId).length; }
+  isInCart(productId: number) { return this.cart.items().some((item) => item.id === productId); }
 
   get paged() { const start = (this.page - 1) * this.pageSize; return this.filtered.slice(start, start + this.pageSize); }
   get pageCount() { return Math.max(1, Math.ceil(this.filtered.length / this.pageSize)); }

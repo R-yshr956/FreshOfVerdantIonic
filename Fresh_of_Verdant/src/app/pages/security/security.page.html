@@ -21,7 +21,7 @@
     <button class="show-password" type="button" (click)="showPasswords = !showPasswords"><ion-icon [name]="showPasswords ? 'eye-off-outline' : 'eye-outline'"></ion-icon>{{ showPasswords ? 'Hide passwords' : 'Show passwords' }}</button>
     @if (error) { <p class="notice error" role="alert">{{ error }}</p> }
     @if (message) { <p class="notice" role="status">{{ message }}</p> }
-    <button class="fv-btn" type="submit"><ion-icon name="lock-closed-outline"></ion-icon> Save new password</button>
-    <small class="service-note">Password changes require account verification. Passwords are not stored on this device.</small>
+    <button class="fv-btn" type="submit" [disabled]="saving"><ion-icon name="lock-closed-outline"></ion-icon> {{ saving ? 'Updating password…' : 'Save new password' }}</button>
+    <small class="service-note">Your current password is verified and the new password is saved to your signed-in account.</small>
   </form>
 </ion-content>

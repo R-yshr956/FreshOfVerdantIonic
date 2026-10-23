@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   category: string;
   price: number;
+  stockQuantity?: number;
   unit: string; // kg, pc, pack...
   description: string;
   rating: number;

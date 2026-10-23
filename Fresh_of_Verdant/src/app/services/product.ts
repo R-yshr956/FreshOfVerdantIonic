@@ -164,6 +164,7 @@ export class ProductService {
       name: row.product_name,
       category: this.resolveCategory(row.product_name, row.category?.category_name),
       price: Number(row.price),
+      stockQuantity: Number(row.stock_quantity ?? 0),
       unit: row.unit,
       description: row.description ?? '',
       rating: 0,

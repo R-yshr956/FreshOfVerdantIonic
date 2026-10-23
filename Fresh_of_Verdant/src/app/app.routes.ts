@@ -69,6 +69,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/payment/payment.page').then((m) => m.PaymentPage)
   },
   {
+    path: 'cashless-wallet',
+    canActivate: [requireAccount],
+    loadComponent: () => import('./pages/cashless-wallet/cashless-wallet.page').then((m) => m.CashlessWalletPage)
+  },
+  {
     path: 'notifications',
     canActivate: [requireAccount],
     loadComponent: () => import('./pages/notifications/notifications.page').then((m) => m.NotificationsPage)

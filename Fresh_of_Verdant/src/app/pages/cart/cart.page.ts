@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonContent, IonIcon, IonMenuButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { add, arrowBackOutline, carOutline, imageOutline, nutritionOutline, remove, trashOutline } from 'ionicons/icons';
+import { add, checkmarkCircleOutline, imageOutline, nutritionOutline, remove, trashOutline } from 'ionicons/icons';
 import { CartService } from '../../services/cart';
 
 @Component({
@@ -14,7 +14,7 @@ import { CartService } from '../../services/cart';
 })
 export class CartPage {
   constructor(public cart: CartService) {
-    addIcons({ add, arrowBackOutline, carOutline, imageOutline, nutritionOutline, remove, trashOutline });
+    addIcons({ add, checkmarkCircleOutline, imageOutline, nutritionOutline, remove, trashOutline });
   }
 
   ionViewWillEnter() {

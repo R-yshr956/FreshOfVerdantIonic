@@ -2,15 +2,31 @@
   <div class="hero img-ph">@if (product.image) { <img [src]="product.image" [alt]="product.name" (error)="products.handleImageError(product)"> } @else { <ion-icon name="image-outline" [attr.aria-label]="product.name + ' image unavailable'"></ion-icon> }
     <button class="round left" (click)="close()"><ion-icon name="close"></ion-icon></button><button class="round right" (click)="toggleFavorite()"><ion-icon [name]="products.isFavorite(product) ? 'heart' : 'heart-outline'" [class.liked]="products.isFavorite(product)"></ion-icon></button><span class="harvest"><ion-icon name="leaf-outline"></ion-icon> HARVESTED TODAY</span>
   </div>
-  <div class="body">@if (product.image && product.imageCredit) { <small class="image-credit">Image: <a [href]="product.imageCredit.url" target="_blank" rel="noopener noreferrer">{{ product.imageCredit.text }}</a></small> }<div class="row"><span class="chip">{{ product.category.toUpperCase() }}</span><span class="rating">@if (productReviews.length) { <span class="rating-stars">@for (starNumber of [1, 2, 3, 4, 5]; track starNumber) { <ion-icon [name]="starNumber <= roundedRating ? 'star' : 'star-outline'"></ion-icon> }</span> {{ productRating.toFixed(1) }} ({{ productReviews.length }}) } @else { No reviews yet }</span></div>
+  <div class="body"><div class="row"><span class="chip">{{ product.category.toUpperCase() }}</span><div class="product-proof"><span class="rating">@if (productReviews.length) { <span class="rating-stars">@for (starNumber of [1, 2, 3, 4, 5]; track starNumber) { <ion-icon [name]="starNumber <= roundedRating ? 'star' : 'star-outline'"></ion-icon> }</span> {{ productRating.toFixed(1) }} ({{ productReviews.length }}) } @else { No reviews yet }</span><span class="delivered-count">{{ productDeliveredCount }} Delivered</span></div></div>
     <h1>{{ product.name }}</h1><p class="price"><strong>₱{{ product.price }}</strong> per {{ product.unit }}</p>
-    <div class="tabs"><strong>Overview</strong><span>Reviews</span></div>
+    <div class="tabs"><button type="button" [class.selected]="activeTab === 'overview'" (click)="selectTab('overview')">Overview</button><button type="button" [class.selected]="activeTab === 'reviews'" (click)="selectTab('reviews')">Reviews{{ productReviews.length ? ' (' + productReviews.length + ')' : '' }}</button></div>
+    @if (activeTab === 'overview') {
     <p class="desc">{{ product.description || product.name + ' is a fresh produce pick. Enjoy it as part of a balanced diet.' }}</p>
     <p class="desc"><b>Origin & history:</b> Sourced from local farms; cultivated and enjoyed across generations. Wash before eating and store chilled where appropriate.</p>
-    <div class="health"><b>How Healthy?</b>@for (note of healthNotes; track note) { <span>✓ {{ note }}</span> }</div>
+    <div class="health"><b>How Healthy?</b><strong>Body support</strong>@for (benefit of bodyBenefits; track benefit) { <span>✓ {{ benefit }}</span> }<strong>Product effects</strong>@for (note of healthNotes; track note) { <span>✓ {{ note }}</span> }<small>Nutrition values are per 100 g. Benefits vary with serving size and preparation.</small></div>
     <div class="nutrition"><div class="nutrition-head"><strong>Nutritional facts</strong><small>per 100g</small></div><div class="nutrition-grid"><div><b>{{ product.calories }}</b><span>Calories</span></div><div><b>{{ product.protein }}g</b><span>Protein</span></div><div><b>{{ product.carbs }}g</b><span>Carbs</span></div><div><b>{{ product.vitaminC }}mg</b><span>Vitamin C</span></div></div></div>
     <div class="qty-row"><div><strong>Quantity</strong><small>In stock · sold by {{ product.unit }}</small></div><div class="stepper"><button (click)="change(-1)"><ion-icon name="remove-outline"></ion-icon></button><span>{{ qty }}</span><button (click)="change(1)"><ion-icon name="add-outline"></ion-icon></button></div></div>
-    <button class="fv-btn" (click)="addToCart()"><ion-icon name="cart-outline"></ion-icon> Add to Cart · ₱{{ total }}</button>
-    <div class="reviews"><h3>Reviews</h3>@if (productReviews.length) { @for (review of productReviews; track review.id) { <p><b>{{ review.author }} · {{ review.rating }}/5</b> — {{ review.text }}</p> } } @else { <p>No customer reviews for this product yet.</p> }</div><h3>You might also like</h3><p>Explore more {{ product.category.toLowerCase() }}.</p>
+    <button class="fv-btn add-cart-button" [class.added]="cartAdded" [disabled]="addingToCart || cartAdded || product.stockQuantity === 0" (click)="addToCart()"><ion-icon [name]="cartAdded ? 'checkmark-circle-outline' : 'cart-outline'"></ion-icon> {{ product.stockQuantity === 0 ? 'Out of Stock' : addingToCart ? 'Adding…' : cartAdded ? 'Added to My Cart' : 'Add to Cart · ₱' + total }}</button>
+    } @else {
+    <div class="reviews"><h3>Customer Reviews</h3>@if (productReviews.length) { @for (review of productReviews; track review.id) {
+      <article class="product-review">
+        <div class="review-avatar">@if (reviewPhoto(review.author); as photo) { <img [src]="photo" [alt]="review.author + ' profile photo'"> } @else { <span>{{ reviewInitials(review.author) }}</span> }</div>
+        <div class="review-copy"><div class="review-heading"><b>{{ review.author }}</b><span class="review-stars" [attr.aria-label]="review.rating + ' out of 5 stars'">@for (starNumber of [1, 2, 3, 4, 5]; track starNumber) { <ion-icon [name]="starNumber <= review.rating ? 'star' : 'star-outline'"></ion-icon> }</span></div><p>{{ review.text }}</p></div>
+      </article>
+    } } @else { <p>No customer reviews for this product yet.</p> }</div>
+    }
+    <section style="margin-top:18px"><h3 style="margin:0;font-size:17px">You Might Also Like</h3><p style="margin:3px 0 10px;color:#68716a;font-size:11px">Picked from today's harvest</p><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px">
+      @for (suggestion of suggestedProducts; track suggestion.id) {
+        <button type="button" style="display:flex;align-items:center;gap:8px;min-width:0;padding:7px;border:1px solid #e7eee8;border-radius:12px;background:#fff;text-align:left" (click)="chooseSuggestion(suggestion)">
+          <span class="img-ph" style="width:42px;height:42px;flex:0 0 42px;border-radius:8px">@if (suggestion.image) { <img style="width:100%;height:100%;object-fit:cover" [src]="suggestion.image" [alt]="suggestion.name" (error)="products.handleImageError(suggestion)"> } @else { <ion-icon name="image-outline"></ion-icon> }</span>
+          <span style="min-width:0"><strong style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#171b18;font-size:11px">{{ suggestion.name }}</strong><small style="display:block;margin-top:3px;color:var(--fv-green-dark);font-size:10px">₱{{ suggestion.price }} / {{ suggestion.unit }}</small></span>
+        </button>
+      }
+    </div></section>
   </div>
 </ion-content>

@@ -1,7 +1,12 @@
 <app-page-header title="Profile & Settings" rightIcon="cart-outline" rightLink="/cart"></app-page-header>
 <ion-content>
   <div class="who">
-    <label class="photo img-ph" title="Choose a profile photo"><span class="initials">{{ profileInitials }}</span><input type="file" accept="image/*" aria-label="Choose profile photo"><i class="check"><ion-icon name="checkmark"></ion-icon></i></label>
+    <label class="photo img-ph" title="Choose a profile photo">
+      <img *ngIf="profilePhoto" [src]="profilePhoto" alt="Profile photo">
+      <span *ngIf="!profilePhoto" class="initials">{{ profileInitials }}</span>
+      <input type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" aria-label="Choose profile photo" (change)="selectProfilePhoto($event)">
+      <i class="check"><ion-icon name="checkmark"></ion-icon></i>
+    </label>
     <div><h2>{{ profileName }}</h2><p>{{ profileEmail }}</p><span class="member">VERDANT MEMBER</span></div>
   </div>
   <div class="profile-stats"><a routerLink="/orders"><b>{{ orderHistory.count() }}</b><span>Orders</span></a><a routerLink="/order-tracker"><b>{{ orderHistory.deliveredCount() }}</b><span>Delivered</span></a><a routerLink="/reviews"><b>{{ reviewService.reviews().length }}</b><span>Reviews</span></a></div>
@@ -44,7 +49,7 @@
   </div>
   <h3>Account</h3>
   <button type="button" class="card link account-link" (click)="openAddresses()" aria-label="Open saved addresses"><span class="ico"><ion-icon name="location-outline"></ion-icon></span><div class="val"><strong>Addresses</strong></div><ion-icon name="chevron-forward"></ion-icon></button>
-  <a class="card link" routerLink="/payment"><span class="ico"><ion-icon name="card-outline"></ion-icon></span><div class="val"><strong>Payment</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
+  <a class="card link" routerLink="/cashless-wallet"><span class="ico"><ion-icon name="card-outline"></ion-icon></span><div class="val"><strong>Payment</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
   <a class="card link" routerLink="/wishlist"><span class="ico"><ion-icon name="heart-outline"></ion-icon></span><div class="val"><strong>My Wishlist</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
   <a class="card link" routerLink="/notifications"><span class="ico"><ion-icon name="notifications-outline"></ion-icon></span><div class="val"><strong>Notifications</strong></div><ion-icon name="chevron-forward"></ion-icon></a>
   <a class="card link" routerLink="/settings"><span class="ico"><ion-icon name="settings-outline"></ion-icon></span><div class="val"><strong>Settings</strong></div><ion-icon name="chevron-forward"></ion-icon></a>

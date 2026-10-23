@@ -1,11 +1,13 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AlertController, IonContent, IonIcon, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { addOutline, cartOutline, close, heart, heartOutline, imageOutline, leafOutline, removeOutline, star, starOutline } from 'ionicons/icons';
+import { addOutline, cartOutline, checkmarkCircleOutline, close, heart, heartOutline, imageOutline, leafOutline, removeOutline, star, starOutline } from 'ionicons/icons';
 import { Product } from '../../models/product';
 import { CartService } from '../../services/cart';
 import { ProductService } from '../../services/product';
 import { ReviewService, UserReview } from '../../services/reviews';
+import { AuthService } from '../../services/auth';
+import { OrderHistoryService } from '../../services/order-history';
 
 @Component({
   selector: 'app-product-detail-modal',
@@ -14,14 +16,41 @@ import { ReviewService, UserReview } from '../../services/reviews';
   standalone: true,
   imports: [IonContent, IonIcon],
 })
-export class ProductDetailModal {
+export class ProductDetailModal implements OnInit {
+  @ViewChild(IonContent) private content?: IonContent;
   @Input() product!: Product; // passed in through componentProps
   qty = 1;
   liked = false;
+  addingToCart = false;
+  cartAdded = false;
+  activeTab: 'overview' | 'reviews' = 'overview';
+  suggestedProducts: Product[] = [];
   private touchStartX = 0;
 
-  constructor(private modalCtrl: ModalController, private alertCtrl: AlertController, private cart: CartService, public products: ProductService, public reviewService: ReviewService) {
-    addIcons({ addOutline, cartOutline, close, heart, heartOutline, imageOutline, leafOutline, removeOutline, star, starOutline });
+  constructor(private modalCtrl: ModalController, private alertCtrl: AlertController, private cart: CartService, public products: ProductService, public reviewService: ReviewService, private auth: AuthService, private orderHistory: OrderHistoryService) {
+    addIcons({ addOutline, cartOutline, checkmarkCircleOutline, close, heart, heartOutline, imageOutline, leafOutline, removeOutline, star, starOutline });
+  }
+
+  ngOnInit() { this.refreshSuggestions(); }
+
+  refreshSuggestions() {
+    const candidates = this.products.products().filter((product) => product.id !== this.product.id);
+    for (let index = candidates.length - 1; index > 0; index--) {
+      const swapIndex = Math.floor(Math.random() * (index + 1));
+      [candidates[index], candidates[swapIndex]] = [candidates[swapIndex], candidates[index]];
+    }
+    this.suggestedProducts = candidates.slice(0, 4);
+  }
+
+  chooseSuggestion(product: Product) {
+    this.product = product;
+    this.qty = 1;
+    this.cartAdded = false;
+    this.addingToCart = false;
+    this.activeTab = 'overview';
+    this.liked = this.products.isFavorite(product);
+    this.refreshSuggestions();
+    setTimeout(() => { void this.content?.scrollToTop(200); });
   }
 
   async toggleFavorite() {
@@ -49,8 +78,10 @@ export class ProductDetailModal {
     const list = this.products.products();
     const index = list.findIndex((item) => item.id === this.product.id);
     const next = list[index + (distance < 0 ? 1 : -1)];
-    if (next) { this.product = next; this.qty = 1; this.liked = this.products.isFavorite(next); }
+    if (next) { this.chooseSuggestion(next); }
   }
+
+  selectTab(tab: 'overview' | 'reviews') { this.activeTab = tab; }
 
   close() {
     this.modalCtrl.dismiss();
@@ -65,8 +96,36 @@ export class ProductDetailModal {
   }
 
   get productReviews(): UserReview[] { return this.reviewService.forProduct(this.product.id); }
+  get productDeliveredCount() {
+    return this.orderHistory.all().filter((order) => order.status === 'Delivered' && order.items.some((item) => item.id === this.product.id)).length;
+  }
   get productRating() { return this.productReviews.length ? this.productReviews.reduce((sum, review) => sum + review.rating, 0) / this.productReviews.length : 0; }
   get roundedRating() { return Math.round(this.productRating); }
+
+  get bodyBenefits() {
+    const benefits: string[] = [];
+    if (this.product.carbs > 0) benefits.push('Carbohydrates provide energy for the brain and muscles.');
+    if (this.product.protein > 0) benefits.push('Protein supports muscle and body tissue maintenance.');
+    if (this.product.vitaminC > 0) benefits.push('Vitamin C supports normal immune function and collagen formation for skin and connective tissue.');
+    return benefits;
+  }
+
+  reviewPhoto(author: string): string | null {
+    let profileName = this.auth.currentName() ?? '';
+    if (!profileName) {
+      try {
+        const saved = JSON.parse(localStorage.getItem('fv-profile-details') ?? '{}') as Record<string, unknown>;
+        profileName = typeof saved['Full Name'] === 'string' ? saved['Full Name'] : '';
+      } catch { /* Use initials if profile details are unavailable. */ }
+    }
+    if (!profileName || author.trim().toLocaleLowerCase() !== profileName.trim().toLocaleLowerCase()) return null;
+    const account = this.auth.currentUser()?.trim().toLowerCase() || 'guest';
+    return localStorage.getItem(`fv-profile-photo:${account}`);
+  }
+
+  reviewInitials(author: string) {
+    return author.trim().split(/\s+/).slice(0, 2).map((part) => part[0]?.toUpperCase() ?? '').join('');
+  }
 
   get healthNotes(): string[] {
     const notes: Record<string, string[]> = {
@@ -107,8 +166,13 @@ export class ProductDetailModal {
     ];
   }
 
-  addToCart() {
-    this.cart.add(this.product, this.qty);
-    this.modalCtrl.dismiss();
+  async addToCart() {
+    if (this.addingToCart || this.cartAdded) return;
+    this.addingToCart = true;
+    const result = await this.cart.add(this.product, this.qty);
+    this.addingToCart = false;
+    if (result === 'added' || result === 'saved') {
+      this.cartAdded = true;
+    }
   }
 }

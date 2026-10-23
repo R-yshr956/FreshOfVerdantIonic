@@ -1,0 +1,41 @@
+<ion-content>
+  <div class="receipt">
+    <header>
+      <div class="mark"><ion-icon name="receipt-outline"></ion-icon></div>
+      <button class="close" type="button" aria-label="Close receipt" (click)="close()"><ion-icon name="close-outline"></ion-icon></button>
+      <small>FARMBOX MARKET · ORDER RECEIPT</small>
+      <h2>Order receipt</h2>
+      <b>#{{ order.id }}</b>
+      <p>{{ placedAt }}</p>
+    </header>
+
+    <section class="items">
+      <h3>Items ordered</h3>
+      @for (item of order.items; track item.id) {
+        <div class="line">
+          <span>{{ item.name }}<small>{{ item.qty }} × ₱{{ item.price }}</small></span>
+          <strong>₱{{ item.price * item.qty }}</strong>
+        </div>
+      }
+    </section>
+
+    <section class="details">
+      <div class="line"><span>Delivery status</span><strong>{{ order.refundRequested ? 'Refund requested' : order.status }}</strong></div>
+      <div class="line"><span>Delivery address</span><strong>{{ order.address }}</strong></div>
+      <div class="line"><span>Payment method</span><strong>{{ order.payment }}</strong></div>
+      <div class="line"><span>Delivery schedule</span><strong>{{ order.deliveryWindow }}</strong></div>
+    </section>
+
+    <section class="charges">
+      <div class="line"><span>Items subtotal</span><strong>₱{{ itemsSubtotal }}</strong></div>
+      <div class="line"><span>Delivery &amp; tax</span><strong>₱{{ deliveryAndTax }}</strong></div>
+      <div class="total"><span>Order total</span><strong>₱{{ order.total }}</strong></div>
+    </section>
+    <p class="note">{{ order.payment === 'Cash on Delivery' ? 'Payment is due when your order arrives.' : 'Cashless payment is selected for this demo order.' }}</p>
+
+    <button class="refund" type="button" [disabled]="order.refundRequested" (click)="requestRefund()">
+      {{ order.refundRequested ? 'Refund requested' : 'Request a refund' }}
+    </button>
+    <button class="done" type="button" (click)="close()">Done</button>
+  </div>
+</ion-content>

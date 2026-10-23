@@ -10,7 +10,7 @@
     <div class="order">
       <div class="top">
         <div><strong>#{{ o.id }}</strong><small>{{ o.date }}</small></div>
-        <span class="status" [class.transit]="o.status === 'In Transit'">
+        <span class="status" [class.transit]="o.status === 'Pending'" [class.refund]="o.refundRequested">
           <i></i> {{ o.status }}
         </span>
       </div>

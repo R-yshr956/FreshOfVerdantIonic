@@ -1,11 +1,12 @@
 import { Injectable, computed, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, finalize, map, of, tap, timeout, TimeoutError } from 'rxjs';
+import { catchError, finalize, firstValueFrom, map, of, tap, timeout, TimeoutError } from 'rxjs';
 import { CartItem, Product } from '../models/product';
 import { ApiCart, ApiCartItem, ApiService } from './api';
 import { AuthService } from './auth';
 import { Router } from '@angular/router';
 import { OrderHistoryService } from './order-history';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -23,7 +24,7 @@ export class CartService {
   tax = computed(() => Math.round(this.subtotal() * 0.04));
   total = computed(() => this.subtotal() + this.deliveryFee + this.tax());
 
-  constructor(private api: ApiService, private auth: AuthService, private router: Router, private orderHistory: OrderHistoryService) {}
+  constructor(private api: ApiService, private auth: AuthService, private router: Router, private orderHistory: OrderHistoryService, private toastController: ToastController) {}
 
   load() {
     this.loading = true;
@@ -51,7 +52,9 @@ export class CartService {
         this.error = this.items().length
           ? 'Could not connect to sync your cart. Showing the saved items on this device.'
           : this.getLoadError(error);
-        return of([] as CartItem[]);
+        // A failed refresh must leave the device copy intact. Returning an empty
+        // array here made the subscription below erase items already in the cart.
+        return of(this.items());
       }),
       finalize(() => {
         this.loading = false;
@@ -89,25 +92,60 @@ export class CartService {
     return error instanceof Error ? error.message : 'Could not load your saved cart.';
   }
 
-  add(product: Product, qty = 1): boolean {
+  async add(product: Product, qty = 1): Promise<'added' | 'saved' | 'rejected' | 'unauthenticated'> {
     if (!this.auth.isAuthenticated) {
       void this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
-      return false;
+      return 'unauthenticated';
+    }
+
+    if (product.stockQuantity !== undefined && product.stockQuantity < qty) {
+      const message = product.stockQuantity <= 0 ? `${product.name} is out of stock.` : `Only ${product.stockQuantity} ${product.unit} of ${product.name} are available.`;
+      this.error = message;
+      await this.notify(message, 'warning');
+      return 'rejected';
     }
 
     this.saving = true;
     this.error = null;
+    const previousItems = this.items();
     const current = this.items().find((item) => item.id === product.id);
     const localItem: CartItem = { id: product.id, name: product.name, price: product.price, unit: product.unit, qty: (current?.qty ?? 0) + qty, image: product.image };
     this.upsertLocal(localItem);
-    this.api.addCartItem(product.id, qty).pipe(timeout({ first: 10000 })).subscribe({
-      next: (row) => {
-        this.upsert(row);
-        this.saving = false;
-      },
-      error: (error: HttpErrorResponse) => this.handleOfflineError(error, 'Saved on this device. It will be available here while the cart service is offline.'),
-    });
-    return true;
+    try {
+      const row = await firstValueFrom(this.api.addCartItem(product.id, qty).pipe(timeout({ first: 10000 })));
+      if (!row) throw new Error('The cart service did not confirm the added product.');
+      this.upsert(row);
+      this.error = null;
+      await this.notify('Added to My Cart', 'success');
+      return 'added';
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
+        this.handleOfflineError(error, 'Your session expired. Sign in again to add products to your cart.');
+        return 'unauthenticated';
+      }
+
+      if (error instanceof HttpErrorResponse && error.status >= 400 && error.status < 500) {
+        this.items.set(previousItems);
+        this.saveItems(previousItems);
+        const message = typeof error.error?.error === 'string' ? error.error.error : 'This product could not be added to your cart.';
+        this.error = message;
+        await this.notify(message, 'warning');
+        return 'rejected';
+      }
+
+      this.error = error instanceof HttpErrorResponse && error.status === 0
+        ? 'Could not connect to sync your cart. The item is saved on this device.'
+        : 'The cart service could not confirm this item. It is saved on this device.';
+      await this.notify('Saved on this device. Reconnect to sync your cart.', 'warning');
+      return 'saved';
+    } finally {
+      this.saving = false;
+    }
+  }
+
+  private async notify(message: string, color: 'success' | 'warning') {
+    const toast = await this.toastController.create({ message, duration: 2200, position: 'top', color });
+    await toast.present();
   }
 
   clearForSignOut() {
@@ -168,7 +206,10 @@ export class CartService {
   }
 
   private restoreItems(): CartItem[] {
-    try { return typeof localStorage === 'undefined' ? [] : JSON.parse(localStorage.getItem('fv-cart-items') ?? '[]') as CartItem[]; }
+    try {
+      if (typeof localStorage === 'undefined') return [];
+      return JSON.parse(localStorage.getItem('fv-cart-items') ?? '[]') as CartItem[];
+    }
     catch { return []; }
   }
 

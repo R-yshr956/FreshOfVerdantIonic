@@ -93,6 +93,14 @@ export class ApiService {
     return this.http.post<{ logout: string }>(`${this.baseUrl}/logout`, {}, { withCredentials: true });
   }
 
+  changePassword(currentPassword: string, newPassword: string) {
+    return this.http.post<{ message: string }>(
+      `${this.baseUrl}/change-password`,
+      { currentPassword, newPassword },
+      { withCredentials: true },
+    );
+  }
+
   cart(): Observable<ApiCart> {
     return this.http.get<ApiCart>(`${this.baseUrl}/cart`, { withCredentials: true });
   }

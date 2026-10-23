@@ -2,26 +2,29 @@ import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AlertController, IonContent, IonIcon } from '@ionic/angular';
+import { NgIf } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { callOutline, cardOutline, checkmark, chevronForward, heartOutline, locateOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline } from 'ionicons/icons';
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ProductService } from '../../services/product';
 import { ReviewService } from '../../services/reviews';
 import { OrderHistoryService } from '../../services/order-history';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.page.html',
   styleUrls: ['./profile.page.scss'],
   standalone: true,
-  imports: [IonContent, IonIcon, FormsModule, RouterLink, PageHeaderComponent],
+  imports: [IonContent, IonIcon, NgIf, FormsModule, RouterLink, PageHeaderComponent],
 })
 export class ProfilePage {
   mapPinX = 50;
   mapPinY = 44;
   isDraggingMapPin = false;
   isLocating = false;
-  constructor(public products: ProductService, public reviewService: ReviewService, public orderHistory: OrderHistoryService, private alerts: AlertController, private router: Router) {
+  profilePhoto: string | null = null;
+  constructor(public products: ProductService, public reviewService: ReviewService, public orderHistory: OrderHistoryService, private alerts: AlertController, private router: Router, private auth: AuthService) {
     addIcons({ callOutline, cardOutline, checkmark, chevronForward, heartOutline, locateOutline, locationOutline, mailOutline, notificationsOutline, pencilOutline, personOutline, settingsOutline, shieldCheckmarkOutline, starOutline });
     this.loadSavedProfile();
   }
@@ -35,6 +38,56 @@ export class ProfilePage {
 
   get profileName() { return this.fields.find((field) => field.label === 'Full Name')?.value ?? ''; }
   get profileEmail() { return this.fields.find((field) => field.label === 'Email Address')?.value ?? ''; }
+  private get profilePhotoKey() {
+    const account = this.auth.currentUser()?.trim().toLowerCase() || 'guest';
+    return `fv-profile-photo:${account}`;
+  }
+
+  async selectProfilePhoto(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    input.value = '';
+    if (!['image/png', 'image/jpeg'].includes(file.type)) {
+      await this.showLocationMessage('Choose a PNG or JPEG image for your profile photo.');
+      return;
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      await this.showLocationMessage('Choose an image smaller than 8 MB.');
+      return;
+    }
+
+    try {
+      const dataUrl = await this.prepareProfilePhoto(file);
+      localStorage.setItem(this.profilePhotoKey, dataUrl);
+      this.profilePhoto = dataUrl;
+    } catch {
+      await this.showLocationMessage('This photo could not be saved. Please choose another PNG or JPEG image.');
+    }
+  }
+
+  private async prepareProfilePhoto(file: File): Promise<string> {
+    const source = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => typeof reader.result === 'string' ? resolve(reader.result) : reject(new Error('Invalid image'));
+      reader.onerror = () => reject(new Error('Could not read image'));
+      reader.readAsDataURL(file);
+    });
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const element = new Image();
+      element.onload = () => resolve(element);
+      element.onerror = () => reject(new Error('Invalid image'));
+      element.src = source;
+    });
+    const scale = Math.min(1, 512 / Math.max(image.naturalWidth, image.naturalHeight));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext('2d');
+    if (!context) throw new Error('Canvas unavailable');
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL('image/jpeg', 0.84);
+  }
   get profileInitials() {
     const words = this.profileName.trim().split(/\s+/).filter(Boolean);
     return words.length > 1 ? `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase() : (words[0]?.[0] ?? 'U').toUpperCase();
@@ -135,6 +188,7 @@ export class ProfilePage {
 
   private loadSavedProfile() {
     try {
+      this.profilePhoto = localStorage.getItem(this.profilePhotoKey);
       const saved = JSON.parse(localStorage.getItem('fv-profile-details') ?? '{}') as Record<string, unknown>;
       this.fields.forEach((field) => {
         const value = saved[field.label];

@@ -1,8 +1,5 @@
 ion-content { --background: #fff; }
 
-.image-credit { display:block; margin:0 0 8px; color:#66716a; font-size:10px; line-height:1.35; }
-.image-credit a { color:#333; text-decoration:underline; }
-
 .hero {
   position: relative;
   height: 220px;
@@ -117,9 +114,24 @@ h1 { margin: 10px 0 2px; font-size: 24px; font-weight: 800; color: #111; }
   span { min-width: 36px; text-align: center; color: #000; font-weight: 700; }
 }
 
-.tabs { display:flex; gap:20px; border-bottom:1px solid #e5e8e5; padding:10px 0; margin-bottom:12px; color:#333; }
-.tabs strong { color:var(--fv-green-dark); }
+.product-proof { display:grid; justify-items:end; gap:2px; }
+.delivered-count { color:var(--fv-muted); font-size:10px; }
+.tabs { display:flex; gap:20px; border-bottom:1px solid #e5e8e5; padding:10px 0; margin-bottom:12px; }
+.tabs button { border:0; border-bottom:2px solid transparent; background:transparent; color:#333; font:inherit; }
+.tabs button.selected { border-color:var(--fv-green); color:var(--fv-green-dark); font-weight:700; }
 .health { display:grid; gap:7px; margin:12px 0 18px; padding:12px; border-radius:12px; background:#f3f8f4; color:#202820; font-size:13px; }
 .health b { font-size:14px; }
+.health strong { margin-top:2px; font-size:12px; }
+.health small { color:#657067; font-size:10px; line-height:1.35; }
 .reviews { border-top:1px solid #e5e8e5; margin-top:18px; padding-top:12px; color:#222; }
 .reviews h3 { margin:0; }
+.product-review { display:flex; align-items:flex-start; gap:10px; margin-top:12px; }
+.review-avatar { width:38px; height:38px; flex:0 0 38px; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:50%; background:var(--fv-green-soft); color:var(--fv-green-dark); font-size:12px; font-weight:700; img { width:100%; height:100%; object-fit:cover; } }
+.review-copy { flex:1; min-width:0; }
+.review-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; b { font-size:14px; } }
+.review-stars { display:inline-flex; flex:0 0 auto; color:#f5a623; ion-icon { font-size:13px; } }
+.review-copy p { margin:4px 0 0; color:#333; font-size:13px; line-height:1.4; }
+.add-cart-button { transition:transform .16s ease,background-color .2s ease,box-shadow .2s ease; }
+.add-cart-button:active { transform:scale(.97); background:#087a3d; }
+.add-cart-button.added { background:#087a3d; box-shadow:0 0 0 4px #00c85330; }
+.add-cart-button:disabled { opacity:1; }

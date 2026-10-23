@@ -195,15 +195,20 @@ ion-content {
 .foot .price { color:#000; }
 
 .add {
-    display: flex;
+    display: grid;
     align-items: center;
-    gap: 2px;
-    height: 32px;
-    padding: 0 10px;
+    justify-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     border: 0;
-    border-radius: 10px;
+    border-radius: 11px;
     background: var(--fv-green-dark);
     color: #fff;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 19px;
+    transition: transform .16s ease, background-color .2s ease, box-shadow .2s ease;
+    ion-icon { color: #fff; }
+    &:active { transform: scale(.92); }
+    &.in-cart { background: #087a3d; box-shadow: 0 0 0 3px #00c85330; }
+    &:disabled { opacity: .55; }
 }

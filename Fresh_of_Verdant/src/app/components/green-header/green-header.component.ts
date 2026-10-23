@@ -16,6 +16,7 @@ import { AuthService } from '../../services/auth';
 export class GreenHeaderComponent {
   @Input() subtitle = '';
   @Input() title = '';
+  @Input() brandMode = false;
 
   constructor(public cart: CartService, public auth: AuthService) {
     addIcons({ cartOutline });

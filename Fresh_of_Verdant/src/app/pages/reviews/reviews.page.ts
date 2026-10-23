@@ -6,6 +6,7 @@ import { checkmarkCircle, createOutline, star, starOutline } from 'ionicons/icon
 import { PageHeaderComponent } from '../../components/page-header/page-header.component';
 import { ProductService } from '../../services/product';
 import { ReviewService, UserReview } from '../../services/reviews';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-reviews',
@@ -24,7 +25,7 @@ export class ReviewsPage {
   formError = '';
   submitted = false;
 
-  constructor(public reviewService: ReviewService, public productService: ProductService) {
+  constructor(public reviewService: ReviewService, public productService: ProductService, private auth: AuthService) {
     addIcons({ checkmarkCircle, createOutline, star, starOutline });
   }
 
@@ -44,6 +45,21 @@ export class ReviewsPage {
 
   pct(count: number) { return this.total ? (count / this.total) * 100 : 0; }
   formatDate(date: string) { return new Date(date).toLocaleDateString(); }
+
+  get profilePhoto() {
+    const account = this.auth.currentUser()?.trim().toLowerCase() || 'guest';
+    return localStorage.getItem(`fv-profile-photo:${account}`);
+  }
+
+  isCurrentUserReview(author: string) {
+    const saved = this.auth.currentName() || (() => {
+      try {
+        const profile = JSON.parse(localStorage.getItem('fv-profile-details') ?? '{}') as Record<string, unknown>;
+        return typeof profile['Full Name'] === 'string' ? profile['Full Name'] : '';
+      } catch { return ''; }
+    })();
+    return !!saved && author.trim().toLocaleLowerCase() === saved.trim().toLocaleLowerCase();
+  }
 
   initials(name: string) {
     return name.trim().split(/\s+/).slice(0, 2).map((part) => part.charAt(0).toUpperCase()).join('');

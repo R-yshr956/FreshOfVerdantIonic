@@ -3,7 +3,10 @@
     <ion-content>
       @if (auth.isAuthenticated) {
         <div class="menu-head" routerLink="/profile">
-          <div class="avatar img-ph">{{ profileInitials }}<ion-icon name="chevron-forward"></ion-icon></div>
+          <div class="avatar img-ph">
+            @if (profilePhoto; as photo) { <img [src]="photo" alt="Profile photo" /> } @else { <span>{{ profileInitials }}</span> }
+            <ion-icon name="chevron-forward"></ion-icon>
+          </div>
           <h2>{{ profileName }}</h2>
           <p><ion-icon name="call-outline"></ion-icon> {{ profilePhone }}</p>
         </div>
@@ -40,7 +43,7 @@
             </button>
           </ion-menu-toggle>
         }
-        <small>FRESH MARKET • VERSION 2.4.0</small>
+        <small>FRESH MARKET • VERSION 1.0.0</small>
       </div>
     </ion-content>
   </ion-menu>

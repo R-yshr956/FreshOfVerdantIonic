@@ -8,12 +8,12 @@
     <div class="two">
       <label class="fld">
         <ion-icon name="person-outline"></ion-icon>
-        <span><small>FULL NAME</small><input name="recipientName" type="text" autocomplete="name" [(ngModel)]="recipient.name" /></span>
+        <span><small>FULL NAME</small><input name="recipientName" type="text" autocomplete="name" placeholder="Recipient's full name" [(ngModel)]="recipient.name" /></span>
       </label>
-      <label class="fld"><ion-icon name="mail-outline"></ion-icon><span><small>EMAIL</small><input name="recipientEmail" type="email" autocomplete="email" [(ngModel)]="recipient.email" /></span></label>
+      <label class="fld"><ion-icon name="mail-outline"></ion-icon><span><small>EMAIL</small><input name="recipientEmail" type="email" autocomplete="email" placeholder="name@example.com" [(ngModel)]="recipient.email" /></span></label>
       <label class="fld">
         <ion-icon name="call-outline"></ion-icon>
-        <span><small>PHONE NUMBER</small><input name="recipientPhone" type="tel" autocomplete="tel" [(ngModel)]="recipient.phone" /></span>
+        <span><small>PHONE NUMBER</small><input name="recipientPhone" type="tel" autocomplete="tel" placeholder="+63 9XX XXX XXXX" [(ngModel)]="recipient.phone" /></span>
       </label>
     </div>
   </section>
@@ -22,6 +22,18 @@
   <section class="card">
     <h3>Shipping Address</h3>
     <p class="hint">We deliver right to your doorstep.</p>
+    @if (savedAddresses.length) {
+      <label class="fld full sel address-choice">
+        <span><small>DELIVER TO SAVED LOCATION</small>
+          <select name="savedAddress" [ngModel]="selectedAddressId" (ngModelChange)="selectSavedAddress($event)">
+            <option [ngValue]="null">Enter a different address</option>
+            @for (saved of savedAddresses; track saved.id) {
+              <option [ngValue]="saved.id">{{ saved.label }} — {{ saved.street }}, {{ saved.city }}</option>
+            }
+          </select></span>
+        <ion-icon name="chevron-down"></ion-icon>
+      </label>
+    }
     <label class="fld full">
       <ion-icon name="location-outline"></ion-icon>
       <span><small>STREET</small><input name="street" type="text" autocomplete="address-line1" maxlength="120" placeholder="House number and street" required [(ngModel)]="address.street" /></span>
@@ -29,7 +41,7 @@
     <div class="two">
       <label class="fld sel">
         <span><small>BARANGAY</small>
-          <select name="barangay" required [(ngModel)]="address.barangay">
+          <select name="barangay" required [ngModel]="address.barangay" (ngModelChange)="onBarangayChange($event)">
             <option value="" disabled>Select barangay</option>
             @for (b of barangays; track b) { <option [value]="b">{{ b }}</option> }
           </select></span>
@@ -44,7 +56,7 @@
       </label>
     </div>
     <label class="fld half">
-      <span><small>ZIP CODE</small><input name="zip" type="text" inputmode="numeric" maxlength="4" placeholder="ZIP code" [(ngModel)]="address.zip" /></span>
+      <span><small>ZIP CODE</small><input name="zip" type="text" inputmode="numeric" maxlength="4" placeholder="Auto-filled from location" [value]="address.zip" readonly /></span>
     </label>
   </section>
 
@@ -64,13 +76,29 @@
   <h3 class="outside">Payment Method</h3>
   <div class="pay">
     @for (p of payments; track p.id) {
-      <button class="pay-row" [class.on]="payment === p.id" (click)="payment = p.id">
+      <button class="pay-row" [class.on]="payment === p.id" (click)="choosePayment(p.id)">
         <span class="ico"><ion-icon [name]="p.icon"></ion-icon></span>
         <span class="t"><strong>{{ p.title }}</strong><small>{{ p.desc }}</small></span>
         <span class="radio" [class.on]="payment === p.id"></span>
       </button>
     }
   </div>
+
+  <section class="payment-summary">
+    <h3>Payment summary</h3>
+    <div class="payment-line"><span>Total Payment</span><strong>₱{{ total }}</strong></div>
+    <div class="payment-line"><span>Total Due</span><strong>₱{{ total }}</strong></div>
+    @if (payment === 'cod') {
+      <label class="cash-entry">
+        <span>Cash tendered <small>Optional, to calculate your change</small></span>
+        <span class="peso-input"><b>₱</b><input name="cashTendered" type="number" inputmode="decimal" min="0" step="1" [(ngModel)]="cashTendered" placeholder="Enter cash amount" /></span>
+      </label>
+      <div class="payment-line"><span>Total Change</span><strong>{{ totalChange === null ? '—' : '₱' + totalChange }}</strong></div>
+    } @else {
+      <div class="payment-line"><span>Total Change</span><strong>₱0</strong></div>
+      <p class="payment-note">Cashless is a demo option. Payment stays due until a payment provider confirms it.</p>
+    }
+  </section>
 
   <!-- Notes -->
   <h3 class="outside">Order Notes</h3>

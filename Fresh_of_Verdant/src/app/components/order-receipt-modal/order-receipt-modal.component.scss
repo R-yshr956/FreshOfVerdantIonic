@@ -1,0 +1,96 @@
+ion-content { --background: #f5f7f5; }
+
+.receipt {
+  padding: 22px 18px 28px;
+  color: #17211b;
+}
+
+header {
+  position: relative;
+  padding: 8px 0 18px;
+  text-align: center;
+
+  .mark {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 12px;
+    border-radius: 15px;
+    background: #e6f7ed;
+    color: var(--fv-green-dark);
+    font-size: 24px;
+  }
+
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: #e9eeeb;
+    color: #35423a;
+    font-size: 20px;
+  }
+
+  small { color: #66756b; font-size: 9px; letter-spacing: 1px; }
+  h2 { margin: 5px 0 2px; font-size: 22px; font-weight: 800; }
+  b { color: var(--fv-green-dark); font-size: 13px; }
+  p { margin: 5px 0 0; color: #657269; font-size: 12px; }
+}
+
+section {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #e8ece9;
+  border-radius: 14px;
+  background: #fff;
+
+  h3 { margin: 0 0 8px; font-size: 14px; }
+}
+
+.line {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px dashed #e5e9e6;
+  font-size: 12px;
+
+  &:last-child { border-bottom: 0; }
+  > span { min-width: 0; }
+  strong { max-width: 58%; text-align: right; overflow-wrap: anywhere; }
+  small { display: block; margin-top: 3px; color: #77827b; font-size: 10px; }
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #fff;
+  font-weight: 800;
+
+  strong { color: var(--fv-green-dark); font-size: 22px; }
+}
+
+.note { margin: 10px 4px 16px; color: #657269; font-size: 11px; text-align: center; }
+
+.refund, .done {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 8px;
+  border-radius: 13px;
+  font-weight: 700;
+}
+
+.refund { border: 1px solid var(--fv-green); background: #fff; color: var(--fv-green-dark); }
+.refund:disabled { border-color: #d5ddd8; color: #69736d; }
+.done { background: var(--fv-green); color: #fff; }

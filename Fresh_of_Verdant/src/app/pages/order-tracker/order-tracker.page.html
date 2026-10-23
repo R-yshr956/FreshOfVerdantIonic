@@ -1,12 +1,14 @@
 <app-page-header subtitle="FARMBOX MARKET" title="Order Tracker" align="left" rightIcon="ellipsis-horizontal" rightLabel="3 of 3" (rightClick)="openOrderActions()"></app-page-header>
 
 <ion-content>
+  @if (order) {
   <div class="confirmed">
     <span class="big-check"><ion-icon name="checkmark"></ion-icon></span>
     <h2>{{ currentStatus === 'Delivered' ? 'Delivery Track Complete' : 'Delivery tracking' }}</h2>
     <b>Order ID #{{ orderId }}</b>
     <p>Follow your order through each delivery step.</p>
-    <a class="fv-btn menu-back" routerLink="/home">Main menu</a>
+    <button class="fv-btn menu-back" type="button" (click)="goToMainMenu()">Main menu</button>
+    <button class="receipt-open" type="button" (click)="openReceipt()">View receipt</button>
   </div>
 
   <!-- Receipt -->
@@ -17,28 +19,54 @@
     }
     <div class="line top"><span>Shipping address</span><span class="r">{{ shippingAddress }}</span></div>
     <div class="line"><span>Payment method</span><span>{{ paymentMethod }}</span></div>
-    <div class="line total"><span>Total paid</span><b>₱{{ orderTotal }}</b></div>
+    <div class="line total"><span>Order total</span><b>₱{{ orderTotal }}</b></div>
   </section>
 
   <!-- Journey -->
   <section class="card">
     <div class="card-head">
       <div><strong>Delivery process</strong><small>Expected {{ deliveryWindow }}</small></div>
-      <ion-icon name="swap-vertical-outline"></ion-icon>
+      <ion-icon name="swap-horizontal-outline"></ion-icon>
     </div>
 
     <div class="steps">
       @for (s of steps; track s.title) {
-        <div class="step" [class]="s.state">
+        <div class="step" [class.done]="s.state === 'done'" [class.active]="s.state === 'active'" [class.pending]="s.state === 'pending'">
           <span class="dot">@if (s.state === 'done') { <ion-icon name="checkmark"></ion-icon> }</span>
-          <div class="t"><strong>{{ s.title }}</strong><small>{{ s.desc }}</small></div>
-          <em>{{ s.meta }}</em>
+          <div class="t"><strong>{{ s.title }}</strong><small>{{ s.desc }}</small><em>{{ s.meta }}</em></div>
         </div>
       }
     </div>
   </section>
+  } @else if (pendingOrders.length) {
+    <section class="pending-orders">
+      <div class="list-heading"><h2>Pending deliveries</h2><p>Track each order as it moves from the farm to your doorstep.</p></div>
+      @for (pending of pendingOrders; track pending.id) {
+        <article class="card pending-card">
+          <div class="pending-head"><div><strong>Order #{{ pending.id }}</strong><small>{{ formatOrderDate(pending.createdAt) }}</small></div><span class="pill">{{ history.statusFor(pending) }}</span></div>
+          <div class="pending-items">
+            @for (item of pending.items.slice(0, 2); track item.id) { <span>{{ item.qty > 1 ? item.qty + '× ' : '' }}{{ item.name }}</span> }
+            @if (pending.items.length > 2) { <span>+{{ pending.items.length - 2 }} more</span> }
+            <b>₱{{ pending.total }}</b>
+          </div>
+          <div class="pending-meta"><span>{{ pending.deliverySchedule === 'same-day' ? 'Same-Day' : 'Standard' }} · {{ pending.deliveryWindow }}</span><span>{{ pending.payment }}</span></div>
+          <div class="steps" aria-label="Delivery timeline with estimated times">
+            @for (step of trackingSteps(pending); track step.title) {
+              <div class="step" [class.done]="step.state === 'done'" [class.active]="step.state === 'active'" [class.pending]="step.state === 'pending'">
+                <span class="dot">@if (step.state === 'done') { <ion-icon name="checkmark"></ion-icon> }</span>
+                <div class="t"><strong>{{ step.title }}</strong><small>{{ step.desc }}</small><em>{{ step.time }}</em></div>
+              </div>
+            }
+          </div>
+          <button class="fv-btn track-button" type="button" (click)="trackOrder(pending.id)">Track Order</button>
+        </article>
+      }
+    </section>
+  } @else {
+    <div class="empty-tracking"><span><ion-icon name="checkmark"></ion-icon></span><h2>No pending deliveries</h2><p>When an order is placed, it will appear here with its live delivery timeline.</p></div>
+  }
 </ion-content>
 
 <ion-footer class="ion-no-border">
-  <p class="help"><ion-icon name="call-outline"></ion-icon> Need help? Call (02) 8800-FARM</p>
+  <p class="help"><ion-icon name="call-outline"></ion-icon> <strong>Need help?</strong> Call (02) 8800-FARM</p>
 </ion-footer>

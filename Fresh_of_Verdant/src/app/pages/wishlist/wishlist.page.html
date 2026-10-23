@@ -25,7 +25,7 @@
           <span class="category">{{ product.category }}</span>
           <h2>{{ product.name }}</h2>
           @if (ratingFor(product); as rating) { <div class="rating"><ion-icon name="star"></ion-icon> {{ rating.toFixed(1) }} · {{ reviewService.forProduct(product.id).length }} reviews</div> } @else { <div class="rating no-rating">No reviews yet</div> }
-          <div class="card-foot"><strong>₱{{ product.price }} <small>/ {{ product.unit }}</small></strong><button class="add" aria-label="Add to cart" (click)="addToCart(product, $event)"><ion-icon name="cart-outline"></ion-icon></button></div>
+          <div class="card-foot"><strong>₱{{ product.price }} <small>/ {{ product.unit }}</small></strong><button class="add" [disabled]="product.stockQuantity === 0" [attr.aria-label]="product.stockQuantity === 0 ? 'Out of stock' : 'Add to cart'" (click)="addToCart(product, $event)"><ion-icon name="cart-outline"></ion-icon></button></div>
         </article>
       }
     </div>

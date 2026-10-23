@@ -63,7 +63,10 @@
     @for (r of reviews; track r.id) {
       <article class="review">
         <div class="who">
-          <span class="avatar">{{ initials(r.author) }}</span>
+          <span class="avatar">
+            @if (isCurrentUserReview(r.author) && profilePhoto; as photo) { <img [src]="photo" alt="{{ r.author }} profile photo" /> }
+            @else { {{ initials(r.author) }} }
+          </span>
           <div class="reviewer">
             <strong>{{ r.author }}</strong>
             <div class="meta">
